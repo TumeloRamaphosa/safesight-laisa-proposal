@@ -1,17 +1,18 @@
 import "./index.css";
 import { Composition } from "remotion";
-import { MyComposition } from "./Composition";
+import { SafeSightProposal } from "./Composition";
 
+// 5 sections × 150 frames at 30fps = 25 seconds total
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
-        id="MyComp"
-        component={MyComposition}
-        durationInFrames={60}
+        id="SafeSightLAISAProposal"
+        component={SafeSightProposal}
+        durationInFrames={750}
         fps={30}
-        width={1280}
-        height={720}
+        width={1920}
+        height={1080}
       />
     </>
   );
