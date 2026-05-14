@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSight Eye Surgery — Precision Vision. Compassionate Care.</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #0A1628;
+    --obsidian: #0A0A0A;
+    --white: #FFFFFF;
+    --blue: #1E5AA8;
+    --blue-light: #2A6FC2;
+    --blue-dark: #14478A;
+    --gold: #C9A84C;
+    --gold-light: #DCC06E;
+    --gray: #F0F2F5;
+    --gray-mid: #C8CED6;
+    --text: #1A1A2E;
+    --text-light: #5A6275;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --max-w: 1200px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAVIGATION ===== */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.4s ease, padding 0.3s ease, box-shadow 0.4s ease;
+  }
+
+  .nav.scrolled {
+    background: rgba(10, 22, 40, 0.97);
+    backdrop-filter: blur(12px);
+    padding: 0.6rem 2rem;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.3);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 40px;
+    height: 40px;
+    position: relative;
+  }
+
+  .nav-logo-text {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+
+  .nav-logo-text span {
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--obsidian) !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .nav-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .nav-cta::after { display: none !important; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(170deg, var(--navy) 0%, var(--obsidian) 60%, #060D18 100%);
+    overflow: hidden;
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image:
+      radial-gradient(circle at 20% 50%, var(--gold) 1px, transparent 1px),
+      radial-gradient(circle at 80% 20%, var(--blue) 1px, transparent 1px);
+    background-size: 60px 60px, 40px 40px;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(30, 90, 168, 0.15) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-eye {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .hero-eye-outer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 160px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+  }
+
+  .hero-eye-iris {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--blue);
+    animation: irisPulse 4s ease-in-out infinite;
+  }
+
+  .hero-eye-pupil {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pupilGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes irisPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); border-color: var(--blue); }
+    50% { transform: translate(-50%, -50%) scale(1.08); border-color: var(--gold); }
+  }
+
+  @keyframes pupilGlow {
+    0%, 100% { opacity: 0.5; box-shadow: 0 0 20px rgba(201, 168, 76, 0.3); }
+    50% { opacity: 0.8; box-shadow: 0 0 40px rgba(201, 168, 76, 0.6); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 860px;
+    padding: 0 2rem;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(201, 168, 76, 0.4);
+    color: var(--gold);
+    padding: 0.4rem 1.4rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.8rem;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: 3.6rem;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  .hero h1 .gold { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.2rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--obsidian);
+    animation: ctaPulse 2.5s ease-in-out infinite;
+  }
+
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.35);
+  }
+
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(201, 168, 76, 0); }
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .btn-blue {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  .btn-blue:hover {
+    background: var(--blue-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(30, 90, 168, 0.35);
+  }
+
+  .btn-dark {
+    background: var(--obsidian);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .btn-dark:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .hero-scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.5; transform: scaleY(0.5); }
+    100% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ===== SECTION COMMON ===== */
+  .section {
+    padding: 6rem 2rem;
+  }
+
+  .section-dark {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .section-gray {
+    background: var(--gray);
+  }
+
+  .section-black {
+    background: var(--obsidian);
+    color: var(--white);
+  }
+
+  .container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-dark .section-label { color: var(--gold); }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: 2.6rem;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--navy);
+  }
+
+  .section-dark .section-title { color: var(--white); }
+  .section-black .section-title { color: var(--white); }
+
+  .section-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  .section-dark .section-subtitle { color: rgba(255,255,255,0.55); }
+  .section-black .section-subtitle { color: rgba(255,255,255,0.55); }
+
+  .section-header { margin-bottom: 3rem; }
+  .section-header.center { text-align: center; }
+  .section-header.center .section-subtitle { margin-left: auto; margin-right: auto; }
+
+  /* ===== TRUST INDICATORS ===== */
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .trust-card {
+    background: var(--white);
+    border: 1px solid rgba(10, 22, 40, 0.08);
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .trust-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(10, 22, 40, 0.1);
+  }
+
+  .trust-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+  }
+
+  .trust-icon svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--white);
+  }
+
+  .trust-number {
+    font-family: var(--serif);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .trust-label {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  /* ===== SERVICES ===== */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .service-card {
+    background: var(--navy);
+    border-radius: 8px;
+    padding: 2.2rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--blue));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(10, 22, 40, 0.35);
+  }
+
+  .service-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .service-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(30, 90, 168, 0.15);
+  }
+
+  .service-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--gold);
+  }
+
+  .service-card h3 {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    color: var(--white);
+    margin-bottom: 0.7rem;
+  }
+
+  .service-card p {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+  }
+
+  /* ===== PATIENT JOURNEY ===== */
+  .journey-track {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 2rem;
+  }
+
+  .journey-track::before {
+    content: '';
+    position: absolute;
+    top: 2.4rem;
+    left: 60px;
+    right: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--blue), var(--gold));
+  }
+
+  .journey-step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    padding: 0 0.5rem;
+  }
+
+  .journey-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin: 0 auto 1.5rem;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 0 6px var(--gray);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .journey-step:hover .journey-dot {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 8px rgba(201, 168, 76, 0.2);
+  }
+
+  .journey-num {
+    font-family: var(--serif);
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .journey-step h3 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    color: var(--navy);
+    margin-bottom: 0.4rem;
+  }
+
+  .journey-step p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.55;
+  }
+
+  /* ===== SPECIALISTS ===== */
+  .specialists-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .specialist-card {
+    background: var(--navy);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .specialist-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(10, 22, 40, 0.4);
+  }
+
+  .specialist-photo {
+    width: 100%;
+    height: 280px;
+    background: linear-gradient(135deg, #0F1F35, #162D4F);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .specialist-photo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to top, var(--navy), transparent);
+  }
+
+  .specialist-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--gold);
+  }
+
+  .specialist-avatar svg {
+    width: 48px;
+    height: 48px;
+    fill: var(--white);
+  }
+
+  .specialist-info {
+    padding: 1.5rem;
+  }
+
+  .specialist-info h3 {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+
+  .specialist-specialty {
+    font-size: 0.82rem;
+    color: var(--gold);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .specialist-creds {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+
+  /* ===== TESTIMONIALS ===== */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .testimonial-card {
+    background: var(--white);
+    border: 1px solid rgba(10, 22, 40, 0.06);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(10, 22, 40, 0.08);
+  }
+
+  .testimonial-quote {
+    font-family: var(--serif);
+    font-size: 2.8rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+  }
+
+  .testimonial-card p {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--navy));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .testimonial-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--navy);
+  }
+
+  .testimonial-procedure {
+    font-size: 0.78rem;
+    color: var(--text-light);
+  }
+
+  /* ===== TECHNOLOGY ===== */
+  .tech-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .tech-text h3 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+
+  .tech-text p {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .tech-features {
+    list-style: none;
+  }
+
+  .tech-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+  }
+
+  .tech-features li .check {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: rgba(201, 168, 76, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .tech-features li .check svg {
+    width: 12px;
+    height: 12px;
+    fill: var(--gold);
+  }
+
+  .tech-visual {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tech-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+  }
+
+  .tech-ring-1 {
+    width: 350px;
+    height: 350px;
+    border-color: rgba(30, 90, 168, 0.2);
+    animation: techSpin 20s linear infinite;
+  }
+
+  .tech-ring-2 {
+    width: 260px;
+    height: 260px;
+    border-color: rgba(201, 168, 76, 0.2);
+    animation: techSpin 15s linear infinite reverse;
+  }
+
+  .tech-ring-3 {
+    width: 170px;
+    height: 170px;
+    border-color: rgba(30, 90, 168, 0.3);
+    animation: techSpin 10s linear infinite;
+  }
+
+  .tech-center-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    animation: techPulse 3s ease-in-out infinite;
+  }
+
+  .tech-center-icon svg {
+    width: 36px;
+    height: 36px;
+    fill: var(--white);
+  }
+
+  @keyframes techSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes techPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(30, 90, 168, 0.4); }
+    50% { box-shadow: 0 0 0 20px rgba(30, 90, 168, 0); }
+  }
+
+  /* ===== BOOKING CTA ===== */
+  .cta-section {
+    background: linear-gradient(170deg, var(--navy) 0%, #060D18 100%);
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .cta-section .section-label { color: var(--gold); }
+
+  .cta-section .section-title {
+    color: var(--white);
+    font-size: 2.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .cta-section .section-subtitle {
+    color: rgba(255,255,255,0.55);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+
+  .btn .icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn .icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    margin-right: 6px;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: var(--obsidian);
+    color: rgba(255,255,255,0.5);
+    padding: 3rem 2rem 2rem;
+  }
+
+  .footer-top {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-brand-name {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-brand-name span { color: var(--gold); }
+
+  .footer-brand p {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    max-width: 300px;
+  }
+
+  .footer h4 {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .footer ul {
+    list-style: none;
+  }
+
+  .footer ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer ul a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+  }
+
+  .footer ul a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-legal {
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+
+  .footer-legal a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-legal a:hover { color: var(--gold); }
+
+  .powered-by {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .powered-by strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ===== WHATSAPP FLOAT ===== */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .whatsapp-label {
+    background: var(--white);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .whatsapp-float:hover .whatsapp-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .whatsapp-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .whatsapp-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5);
+  }
+
+  .whatsapp-btn svg {
+    width: 30px;
+    height: 30px;
+    fill: var(--white);
+  }
+
+  /* ===== SCROLL ANIMATIONS ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  @media (max-width: 968px) {
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .specialists-grid { grid-template-columns: repeat(2, 1fr); }
+    .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+    .tech-content { grid-template-columns: 1fr; }
+    .tech-visual { height: 300px; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 2.8rem; }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(10, 22, 40, 0.98);
+      padding: 1.5rem 2rem;
+      gap: 1.2rem;
+    }
+    .nav-hamburger { display: flex; }
+
+    .trust-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .specialists-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .journey-track {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+      padding-left: 3rem;
+    }
+    .journey-track::before {
+      top: 0;
+      bottom: 0;
+      left: 2.6rem;
+      right: auto;
+      height: auto;
+      width: 2px;
+    }
+    .journey-step { text-align: left; padding-left: 1.5rem; position: relative; }
+    .journey-dot {
+      position: absolute;
+      left: -2.6rem;
+      top: 0;
+      margin: 0;
+    }
+    .hero h1 { font-size: 2.2rem; }
+    .section-title { font-size: 2rem; }
+    .cta-section .section-title { font-size: 2rem; }
+    .section { padding: 4rem 1.2rem; }
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .hero-actions { flex-direction: column; align-items: center; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="#C9A84C" stroke-width="1.5"/>
+        <circle cx="20" cy="20" r="8" fill="none" stroke="#1E5AA8" stroke-width="1.5"/>
+        <circle cx="20" cy="20" r="3" fill="#C9A84C"/>
+        <path d="M5 20 Q20 6 35 20 Q20 34 5 20Z" fill="none" stroke="#C9A84C" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">Safe<span>Sight</span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#specialists">Specialists</a></li>
+    <li><a href="#technology">Technology</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="#booking" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-eye">
+    <div class="hero-eye-outer"></div>
+    <div class="hero-eye-iris">
+      <div class="hero-eye-pupil"></div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Johannesburg's Premier Eye Surgery Centre</div>
+    <h1>Precision Vision.<br><span class="gold">Compassionate Care.</span></h1>
+    <p class="hero-sub">World-class ophthalmology in the heart of Johannesburg. From cataract surgery to LASIK, trust South Africa's leading eye specialists with your sight.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn btn-gold">Book a Consultation</a>
+      <a href="#services" class="btn btn-outline">Explore Services</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== TRUST INDICATORS ===== -->
+<section class="section section-gray" id="trust">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-card reveal">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        </div>
+        <div class="trust-number">5</div>
+        <div class="trust-label">Specialist Ophthalmologists</div>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
+        </div>
+        <div class="trust-number">15,000+</div>
+        <div class="trust-label">Procedures Performed</div>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+        </div>
+        <div class="trust-number">98.7%</div>
+        <div class="trust-label">Success Rate</div>
+      </div>
+      <div class="trust-card reveal">
+        <div class="trust-icon">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        </div>
+        <div class="trust-number">20+</div>
+        <div class="trust-label">Years of Excellence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section section-dark" id="services">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label">Our Services</div>
+      <h2 class="section-title">Comprehensive Eye Care</h2>
+      <p class="section-subtitle">From routine check-ups to complex surgical procedures, our team delivers precision outcomes with compassionate care.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+        <h3>Cataract Surgery</h3>
+        <p>Advanced phacoemulsification with premium intraocular lens implantation. Restore crystal-clear vision with South Africa's most experienced surgical team.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+        <h3>LASIK &amp; PRK</h3>
+        <p>Wavefront-guided laser vision correction tailored to your unique eye profile. Reduce or eliminate your dependence on glasses and contact lenses.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <h3>Glaucoma Treatment</h3>
+        <p>Early detection and advanced minimally invasive glaucoma surgery (MIGS). Protect your vision from the silent thief of sight with expert intervention.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        </div>
+        <h3>Retina Care</h3>
+        <p>Comprehensive retinal diagnosis and treatment including vitrectomy, laser therapy, and macular degeneration management using the latest imaging technology.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-5h2c0 1.65 1.35 3 3 3s3-1.35 3-3h2c0 2.76-2.24 5-5 5s-5-2.24-5-5z"/></svg>
+        </div>
+        <h3>Paediatric Ophthalmology</h3>
+        <p>Specialised eye care for children including strabismus correction, amblyopia treatment, and congenital eye conditions managed with gentle expertise.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+        <h3>General Eye Health</h3>
+        <p>Comprehensive eye examinations, diabetic eye screening, dry eye management, and routine ophthalmic care for lasting visual health at every stage of life.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PATIENT JOURNEY ===== -->
+<section class="section section-gray" id="journey">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label">Your Journey</div>
+      <h2 class="section-title">From Consultation to Clear Vision</h2>
+      <p class="section-subtitle">We guide you through every step of your eye care journey with clarity, compassion, and clinical excellence.</p>
+    </div>
+    <div class="journey-track">
+      <div class="journey-step reveal">
+        <div class="journey-dot"></div>
+        <div class="journey-num">Step 01</div>
+        <h3>Book Online</h3>
+        <p>Schedule your consultation through our simple online booking system or WhatsApp us directly.</p>
+      </div>
+      <div class="journey-step reveal">
+        <div class="journey-dot"></div>
+        <div class="journey-num">Step 02</div>
+        <h3>Pre-Assessment</h3>
+        <p>Comprehensive diagnostic evaluation using advanced imaging to create your personalised treatment plan.</p>
+      </div>
+      <div class="journey-step reveal">
+        <div class="journey-dot"></div>
+        <div class="journey-num">Step 03</div>
+        <h3>Surgery</h3>
+        <p>State-of-the-art surgical procedure performed by your specialist with precision technology and techniques.</p>
+      </div>
+      <div class="journey-step reveal">
+        <div class="journey-dot"></div>
+        <div class="journey-num">Step 04</div>
+        <h3>Recovery &amp; Follow-Up</h3>
+        <p>Dedicated post-operative care with scheduled follow-ups to ensure optimal healing and visual outcomes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPECIALISTS ===== -->
+<section class="section section-dark" id="specialists">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label">Our Specialists</div>
+      <h2 class="section-title">Meet Our Ophthalmologists</h2>
+      <p class="section-subtitle">Internationally trained, locally dedicated. Our team brings decades of combined experience to every patient encounter.</p>
+    </div>
+    <div class="specialists-grid">
+      <div class="specialist-card reveal">
+        <div class="specialist-photo">
+          <div class="specialist-avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+        <div class="specialist-info">
+          <h3>Dr. Thabo Mokoena</h3>
+          <div class="specialist-specialty">Cataract &amp; Refractive Surgery</div>
+          <div class="specialist-creds">MBChB (Wits), FCS(SA) Ophth, FRCS(Edin)<br>22 years surgical experience<br>Former Head of Ophthalmology &mdash; Chris Hani Baragwanath Hospital</div>
+        </div>
+      </div>
+      <div class="specialist-card reveal">
+        <div class="specialist-photo">
+          <div class="specialist-avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+        <div class="specialist-info">
+          <h3>Dr. Priya Naidoo</h3>
+          <div class="specialist-specialty">Glaucoma &amp; Neuro-Ophthalmology</div>
+          <div class="specialist-creds">MBChB (UCT), FCS(SA) Ophth, MMed Ophth<br>18 years specialising in glaucoma<br>Published researcher &mdash; SA Journal of Ophthalmology</div>
+        </div>
+      </div>
+      <div class="specialist-card reveal">
+        <div class="specialist-photo">
+          <div class="specialist-avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
+        <div class="specialist-info">
+          <h3>Dr. Anand Pillay</h3>
+          <div class="specialist-specialty">Retina &amp; Vitreoretinal Surgery</div>
+          <div class="specialist-creds">MBChB (Natal), FCS(SA) Ophth, Fellowship Retina (Moorfields, London)<br>20 years in vitreoretinal surgery<br>Pioneer of MIGS procedures in Southern Africa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label">Patient Stories</div>
+      <h2 class="section-title">Hear From Those We've Helped</h2>
+      <p class="section-subtitle">Real stories from real patients who trusted SafeSight with their vision.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-quote">&ldquo;</div>
+        <p>I was terrified of cataract surgery, but Dr. Mokoena explained everything so clearly and made me feel completely at ease. The next morning, I could see the birds on the tree outside my window for the first time in years. I wish I'd done it sooner.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">NT</div>
+          <div>
+            <div class="testimonial-name">Nthabiseng Tau</div>
+            <div class="testimonial-procedure">Cataract Surgery</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-quote">&ldquo;</div>
+        <p>After wearing glasses since I was eight, I finally got LASIK at SafeSight. The whole process took less than twenty minutes and now I have 20/20 vision. Dr. Naidoo and her team were phenomenal from start to finish.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">JV</div>
+          <div>
+            <div class="testimonial-name">Johan van der Merwe</div>
+            <div class="testimonial-procedure">LASIK Surgery</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-quote">&ldquo;</div>
+        <p>My son was diagnosed with a lazy eye at age four. Dr. Pillay was so patient and thorough with his assessment. After six months of treatment, his vision has improved dramatically. We are incredibly grateful to the entire SafeSight team.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">LD</div>
+          <div>
+            <div class="testimonial-name">Lerato Dlamini</div>
+            <div class="testimonial-procedure">Paediatric Ophthalmology</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TECHNOLOGY ===== -->
+<section class="section section-black" id="technology">
+  <div class="container">
+    <div class="tech-content">
+      <div class="tech-text reveal">
+        <div class="section-label">Advanced Technology</div>
+        <h2 class="section-title" style="color: var(--white); margin-bottom: 1rem;">Precision Instrumentation.<br><span style="color: var(--gold);">Superior Outcomes.</span></h2>
+        <p>SafeSight invests in the latest ophthalmic technology to ensure every procedure benefits from the most advanced tools available in modern eye surgery.</p>
+        <ul class="tech-features">
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+            Alcon LenSx Femtosecond Laser &mdash; bladeless cataract surgery
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+            Zeiss Cirrus HD-OCT &mdash; retinal imaging to the micron
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+            AMO VISX S4 IR Excimer Laser &mdash; custom wavefront LASIK
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+            Haag-Streit BIOM &mdash; wide-angle vitreoretinal visualisation
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+            IOLMaster 700 &mdash; biometry with telecentric keratometry
+          </li>
+        </ul>
+      </div>
+      <div class="tech-visual reveal">
+        <div class="tech-ring tech-ring-1"></div>
+        <div class="tech-ring tech-ring-2"></div>
+        <div class="tech-ring tech-ring-3"></div>
+        <div class="tech-center-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOOKING CTA ===== -->
+<section class="cta-section" id="booking">
+  <div class="container" style="position: relative; z-index: 2;">
+    <div class="section-header center">
+      <div class="section-label">Take the First Step</div>
+      <h2 class="section-title">Your Vision Deserves the Best</h2>
+      <p class="section-subtitle">Don't wait to see the world clearly again. Book your consultation today and take the first step towards life-changing eye care.</p>
+    </div>
+    <div class="cta-buttons">
+      <a href="https://wa.me/27110000000" class="btn btn-gold" target="_blank" rel="noopener">
+        <span class="icon">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.546 4.094 1.504 5.824L.053 23.632l5.965-1.565A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.94 0-3.792-.518-5.397-1.477l-.387-.23-3.478.913.928-3.395-.253-.402A9.794 9.794 0 012.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+        </span>
+        WhatsApp Us
+      </a>
+      <a href="tel:+27110000000" class="btn btn-blue">
+        <span class="icon">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </span>
+        Call 011 000 0000
+      </a>
+      <a href="#" class="btn btn-dark" onclick="alert('Online booking coming soon. Please WhatsApp or call us to schedule.')">
+        <span class="icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+        </span>
+        Book Online
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-name">Safe<span>Sight</span></div>
+      <p>Johannesburg's premier ophthalmology practice. Precision vision. Compassionate care. Trusted by over 15,000 patients across South Africa.</p>
+      <p style="font-size: 0.82rem; color: rgba(255,255,255,0.4);">HPCSA Practice Number: 0123456</p>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Cataract Surgery</a></li>
+        <li><a href="#services">LASIK &amp; PRK</a></li>
+        <li><a href="#services">Glaucoma Treatment</a></li>
+        <li><a href="#services">Retina Care</a></li>
+        <li><a href="#services">Paediatric Ophthalmology</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#journey">Patient Journey</a></li>
+        <li><a href="#specialists">Our Specialists</a></li>
+        <li><a href="#technology">Our Technology</a></li>
+        <li><a href="#testimonials">Patient Stories</a></li>
+        <li><a href="#booking">Book a Consultation</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+27110000000">011 000 0000</a></li>
+        <li><a href="mailto:info@safesight.co.za">info@safesight.co.za</a></li>
+        <li>Sandton, Johannesburg</li>
+        <li>Gauteng, South Africa</li>
+        <li><a href="https://wa.me/27110000000" target="_blank" rel="noopener">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      &copy; 2026 SafeSight Eye Surgery. All rights reserved. |
+      <a href="#">Privacy Policy</a> |
+      <a href="#">POPIA Compliance</a> |
+      <a href="#">Terms of Service</a>
+      <br>
+      SafeSight is a registered healthcare provider compliant with the Protection of Personal Information Act (POPIA) and regulated by the Health Professions Council of South Africa (HPCSA).
+    </div>
+    <div class="powered-by">
+      Powered by <strong>Valley OS</strong>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOAT ===== -->
+<div class="whatsapp-float">
+  <div class="whatsapp-label">Chat with us</div>
+  <a href="https://wa.me/27110000000" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.546 4.094 1.504 5.824L.053 23.632l5.965-1.565A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.94 0-3.792-.518-5.397-1.477l-.387-.23-3.478.913.928-3.395-.253-.402A9.794 9.794 0 012.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+  </a>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+  // Navbar scroll effect
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  // Hamburger toggle
+  var hamburger = document.getElementById('hamburger');
+  var navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', function() {
+    navLinks.classList.toggle('open');
+  });
+
+  // Close mobile menu on link click
+  navLinks.querySelectorAll('a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  reveals.forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // Staggered reveal for grid children
+  var grids = document.querySelectorAll('.trust-grid, .services-grid, .specialists-grid, .testimonials-grid, .journey-track');
+  grids.forEach(function(grid) {
+    var cards = grid.querySelectorAll('.reveal');
+    cards.forEach(function(card, i) {
+      card.style.transitionDelay = (i * 0.1) + 's';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
