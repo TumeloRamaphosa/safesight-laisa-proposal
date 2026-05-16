@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSight Agent OS — Clinical Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --obsidian: #05070A;
+    --surface: #0D1117;
+    --card: #161B22;
+    --gold: #C9A84C;
+    --gold-dim: #A68A3E;
+    --teal: #0891B2;
+    --teal-dim: #0E7490;
+    --light: #F5F0E8;
+    --muted: #8B949E;
+    --green: #238636;
+    --red: #DA3633;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+
+  body {
+    background: var(--obsidian);
+    color: var(--light);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes glow { 0%, 100% { box-shadow: 0 0 5px rgba(201,168,76,0.2); } 50% { box-shadow: 0 0 20px rgba(201,168,76,0.4); } }
+
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  .thinking-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1s infinite; }
+
+  /* ─── LAYOUT ─── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .logo { font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--gold); }
+  .logo span { color: var(--light); font-weight: 400; }
+
+  .nav-links { display: flex; gap: 20px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .system-status { display: flex; gap: 16px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
+  .status-item { display: flex; align-items: center; gap: 6px; }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+  
+  .sidebar-section {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 16px;
+    border-left: 2px solid var(--teal);
+  }
+
+  .sidebar-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .agent-list { display: flex; flex-direction: column; gap: 12px; }
+  .agent-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .agent-avatar { width: 32px; height: 32px; border-radius: 6px; background: rgba(201,168,76,0.1); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gold); font-size: 12px; }
+  .agent-info { display: flex; flex-direction: column; gap: 1px; }
+  .agent-name { font-weight: 600; }
+  .agent-task { font-size: 11px; color: var(--muted); }
+
+  /* ─── MAIN CONTENT ─── */
+  .content { display: flex; flex-direction: column; gap: 20px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card { background: var(--card); padding: 16px; border-radius: 8px; border-bottom: 2px solid rgba(201,168,76,0.1); }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--gold); margin: 4px 0; }
+  .stat-sub { font-size: 11px; color: var(--green); }
+
+  .panel { background: var(--card); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+  .panel-title { font-family: var(--font-heading); font-size: 18px; font-weight: 600; }
+
+  /* ─── BILLING / GOODX ─── */
+  .billing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .billing-action { background: rgba(201,168,76,0.05); border: 1px dashed var(--gold-dim); border-radius: 6px; padding: 16px; text-align: center; cursor: pointer; transition: background 0.2s; }
+  .billing-action:hover { background: rgba(201,168,76,0.1); }
+  .billing-action-title { font-size: 12px; font-weight: 600; color: var(--gold); }
+  
+  .medical-aid-list { display: flex; flex-direction: column; gap: 8px; }
+  .ma-item { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 10px; background: rgba(255,255,255,0.02); border-radius: 4px; }
+  .ma-status { color: var(--green); font-weight: 600; }
+
+  /* ─── COMPOSIO / SOCIAL ─── */
+  .social-hub { display: flex; flex-wrap: wrap; gap: 12px; }
+  .social-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--surface); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
+  .social-icon { width: 20px; height: 20px; filter: grayscale(1); opacity: 0.5; transition: 0.3s; }
+  .social-item.connected .social-icon { filter: grayscale(0); opacity: 1; }
+  .social-item.connected { border-color: var(--teal); }
+  .social-name { font-size: 11px; font-weight: 600; }
+
+  /* ─── FEED ─── */
+  .feed { display: flex; flex-direction: column; gap: 10px; font-family: var(--font-mono); font-size: 12px; height: 300px; overflow-y: auto; padding-right: 10px; }
+  .feed-item { padding: 8px; background: rgba(255,255,255,0.02); border-radius: 4px; border-left: 2px solid var(--muted); animation: slideIn 0.3s ease-out; }
+  .feed-time { color: var(--muted); font-size: 10px; margin-bottom: 2px; }
+  .feed-msg { color: var(--light); }
+
+  /* ─── RIGHT PANEL ─── */
+  .right-panel { display: flex; flex-direction: column; gap: 20px; }
+  
+  .voice-card { background: linear-gradient(135deg, var(--teal-dim), var(--obsidian)); padding: 20px; border-radius: 8px; text-align: center; }
+  .voice-waves { display: flex; justify-content: center; gap: 4px; height: 20px; align-items: center; margin: 15px 0; }
+  .wave-bar { width: 3px; height: 100%; background: var(--light); border-radius: 2px; animation: pulse 1s infinite alternate; }
+  .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+  .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--obsidian); }
+  ::-webkit-scrollbar-thumb { background: var(--card); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+  @media (max-width: 1200px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .sidebar, .right-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">SafeSight <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="safesight-agent-os.html" class="nav-link active">Dashboard</a>
+    <a href="laisa-agent-os.html" class="nav-link">Switch to LAISA</a>
+    <a href="#" class="nav-link">Patient Records</a>
+    <a href="#" class="nav-link">Agent Configuration</a>
+  </div>
+  <div class="system-status">
+    <div class="status-item"><div class="live-dot"></div> ORGO VM-01: ACTIVE</div>
+    <div class="status-item"><div class="live-dot"></div> OBSIDIAN SYNC: OK</div>
+    <div class="status-item" id="systemClock">12:00:00</div>
+  </div>
+</div>
+
+<div class="main-grid">
+  <!-- LEFT: AGENT STATUS -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Active Agents <span>RALF LOOP</span></div>
+      <div class="agent-list" id="agentList">
+        <!-- Agents populated by JS -->
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="border-left-color: var(--gold);">
+      <div class="sidebar-title">Mission Progress</div>
+      <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Phase 1: Digital Foundation</div>
+      <div style="height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden;">
+        <div style="width: 85%; height: 100%; background: var(--gold);"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 5px; color: var(--muted); font-family: var(--font-mono);">
+        <span>85% Complete</span>
+        <span>12/14 Tasks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: PRIMARY INTEL -->
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Daily Revenue</div>
+        <div class="stat-value" id="statRevenue">R0</div>
+        <div class="stat-sub">↑ 14% vs avg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Patient Volume</div>
+        <div class="stat-value" id="statPatients">0</div>
+        <div class="stat-sub">5 Pending Prep</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Agent ROI</div>
+        <div class="stat-value">3.2x</div>
+        <div class="stat-sub">Manual Cost Save</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">System Uptime</div>
+        <div class="stat-value" id="statUptime">99.9%</div>
+        <div class="stat-sub">Stable (Orgo)</div>
+      </div>
+    </div>
+
+    <!-- BILLING / GOODX -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Financial Control Center (CashClaw)</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--teal);">GOODX INTEGRATION ACTIVE</div>
+      </div>
+      <div class="billing-grid">
+        <div class="billing-action" onclick="window.dispatchEvent(new CustomEvent('agentos:action', {detail: {action: 'Generate Payment Link', agent: 'CashClaw'}}))">
+          <div class="billing-action-title">Generate Payment Link</div>
+          <div style="font-size: 10px; color: var(--muted); margin-top: 4px;">WhatsApp/SMS Delivery</div>
+        </div>
+        <div class="billing-action">
+          <div class="billing-action-title">Verify Medical Aid</div>
+          <div style="font-size: 10px; color: var(--muted); margin-top: 4px;">Real-time Balance Check</div>
+        </div>
+      </div>
+      <div class="medical-aid-list">
+        <div class="ma-item"><span>Discovery Health - J. Molefe</span><span class="ma-status">VERIFIED (R12,400)</span></div>
+        <div class="ma-item"><span>Bonitas - S. Pillay</span><span class="ma-status">VERIFIED (R4,200)</span></div>
+        <div class="ma-item"><span>Momentum - T. Nkosi</span><span class="ma-status" style="color: var(--gold);">PENDING AUTH</span></div>
+      </div>
+    </div>
+
+    <!-- COMPOSIO HUB -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Composio Social Engine (Naledi)</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--gold);">99+ INTERACTIONS TODAY</div>
+      </div>
+      <div class="social-hub">
+        <div class="social-item connected">
+          <img src="https://www.facebook.com/favicon.ico" class="social-icon" alt="FB">
+          <div class="social-name">Facebook</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://www.instagram.com/static/images/ico/favicon.ico/36b30483518d.ico" class="social-icon" alt="IG">
+          <div class="social-name">Instagram</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://whatsapp.com/favicon.ico" class="social-icon" alt="WA">
+          <div class="social-name">WhatsApp</div>
+        </div>
+        <div class="social-item">
+          <img src="https://telegram.org/favicon.ico" class="social-icon" alt="TG">
+          <div class="social-name">Telegram</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://www.google.com/favicon.ico" class="social-icon" alt="Ads">
+          <div class="social-name">Google Ads</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button style="flex: 1; padding: 10px; background: var(--surface); border: 1px solid var(--gold); color: var(--gold); border-radius: 4px; font-size: 12px; cursor: pointer;">Generate Daily Insights</button>
+        <button style="flex: 1; padding: 10px; background: var(--gold); border: none; color: var(--obsidian); border-radius: 4px; font-size: 12px; font-weight: 700; cursor: pointer;">Boost High-Performer</button>
+      </div>
+    </div>
+
+    <!-- ACTIVITY LOG -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Agentic Activity Feed</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--muted);">REAL-TIME MISSION LOG</div>
+      </div>
+      <div class="feed" id="activityFeed">
+        <!-- Feed populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: COMMS & CONTENT -->
+  <div class="right-panel">
+    <div class="voice-card">
+      <div class="sidebar-title" style="color: var(--light);">Voice Intelligence (Charlie)</div>
+      <div style="font-size: 12px; margin-top: 10px; color: rgba(245,240,232,0.8);">Active Call: Appointment Reminder</div>
+      <div class="voice-waves">
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--light);">ElevenLabs AI Model: V2_EXPRESSIVE</div>
+    </div>
+
+    <div class="sidebar-section" style="border-left-color: var(--gold);">
+      <div class="sidebar-title">AgentMail Reporting (Goose)</div>
+      <div class="medical-aid-list">
+        <div class="ma-item"><span>Daily Revenue Report</span><span class="ma-status">SENT</span></div>
+        <div class="ma-item"><span>Patient Handover SOP</span><span class="ma-status">QUEUED</span></div>
+        <div class="ma-item"><span>Weekly ROI Summary</span><span class="ma-status" style="color: var(--muted);">MON 09:00</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="border-left-color: var(--teal);">
+      <div class="sidebar-title">Higgsfield AI Content</div>
+      <div style="aspect-ratio: 16/9; background: var(--surface); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); flex-direction: column; gap: 10px;">
+        <div style="width: 30px; height: 30px; border: 2px solid var(--muted); border-radius: 50%; display: flex; align-items: center; justify-content: center;">▶</div>
+        PREVIEW: Treatment Education Video
+      </div>
+      <button style="width: 100%; margin-top: 12px; padding: 8px; background: transparent; border: 1px solid var(--teal); color: var(--teal); border-radius: 4px; font-size: 11px; cursor: pointer;">Generate New Asset</button>
+    </div>
+  </div>
+</div>
+
+<script src="src/agent-os-orchestrator.js"></script>
+<script>
+  // Dashboard Specific UI Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const activityFeed = document.getElementById('activityFeed');
+    const agentList = document.getElementById('agentList');
+    const statRevenue = document.getElementById('statRevenue');
+    const statPatients = document.getElementById('statPatients');
+    const statUptime = document.getElementById('statUptime');
+    const systemClock = document.getElementById('systemClock');
+
+    // Clock
+    setInterval(() => {
+      systemClock.textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    // Initial Agents
+    if (window.AgentOrchestrator) {
+      updateAgentList(window.AgentOrchestrator.agents);
+    }
+
+    // Listen for events
+    window.addEventListener('agentos:activity', (e) => {
+      const item = document.createElement('div');
+      item.className = 'feed-item';
+      item.innerHTML = `<div class="feed-time">${e.detail.time}</div><div class="feed-msg">${e.detail.message}</div>`;
+      activityFeed.prepend(item);
+      if (activityFeed.children.length > 50) activityFeed.lastChild.remove();
+    });
+
+    window.addEventListener('agentos:agentUpdate', (e) => {
+      updateAgentList(window.AgentOrchestrator.agents);
+    });
+
+    window.addEventListener('agentos:statsUpdate', (e) => {
+      statRevenue.textContent = 'R' + e.detail.revenue.toLocaleString();
+      statPatients.textContent = e.detail.patientVolume;
+      statUptime.textContent = e.detail.systemUptime;
+    });
+
+    function updateAgentList(agents) {
+      agentList.innerHTML = agents.map(a => `
+        <div class="agent-item">
+          <div class="agent-avatar">${a.name[0]}</div>
+          <div class="agent-info">
+            <div class="agent-name">${a.name} <span class="${a.status === 'Active' ? 'live-dot' : 'thinking-dot'}" style="display:inline-block; margin-left:4px;"></span></div>
+            <div class="agent-task">${a.task}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  });
+</script>
+
+</body>
+</html>

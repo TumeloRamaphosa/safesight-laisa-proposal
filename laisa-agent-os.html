@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAISA Agent OS — Aesthetic Excellence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --obsidian: #0A0808;
+    --surface: #141010;
+    --card: #1D1818;
+    --gold: #D4AF37;
+    --gold-dim: #AA8B2C;
+    --rose: #E91E63;
+    --rose-dim: #C2185B;
+    --light: #FAF9F6;
+    --muted: #8E8585;
+    --green: #4CAF50;
+    --red: #F44336;
+    --font-heading: 'Playfair Display', serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+
+  body {
+    background: var(--obsidian);
+    color: var(--light);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  .thinking-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1s infinite; }
+
+  /* ─── LAYOUT ─── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .logo { font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--light); font-weight: 300; font-style: italic; }
+
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .system-status { display: flex; gap: 20px; font-size: 11px; font-family: var(--font-mono); color: var(--muted); }
+  .status-item { display: flex; align-items: center; gap: 8px; }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr 340px;
+    gap: 24px;
+    padding: 24px;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  
+  .sidebar-section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  .sidebar-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+  }
+
+  .agent-list { display: flex; flex-direction: column; gap: 16px; }
+  .agent-item { display: flex; align-items: center; gap: 12px; font-size: 14px; padding: 8px; border-radius: 8px; transition: background 0.2s; }
+  .agent-item:hover { background: rgba(212,175,55,0.05); }
+  .agent-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dim), var(--obsidian)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--light); font-size: 14px; border: 1px solid var(--gold); }
+  .agent-info { display: flex; flex-direction: column; gap: 2px; }
+  .agent-name { font-weight: 600; color: var(--light); }
+  .agent-task { font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* ─── MAIN CONTENT ─── */
+  .content { display: flex; flex-direction: column; gap: 24px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border-top: 2px solid var(--gold); position: relative; overflow: hidden; }
+  .stat-card::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: radial-gradient(circle at top right, rgba(212,175,55,0.1), transparent); }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .stat-value { font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--gold); margin: 6px 0; }
+  .stat-sub { font-size: 11px; color: var(--rose); font-weight: 500; }
+
+  .panel { background: var(--card); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.1); padding-bottom: 16px; }
+  .panel-title { font-family: var(--font-heading); font-size: 20px; font-weight: 600; color: var(--light); }
+
+  /* ─── BILLING / LUXURY ─── */
+  .billing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .billing-action { background: linear-gradient(135deg, rgba(212,175,55,0.05), transparent); border: 1px solid rgba(212,175,55,0.2); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+  .billing-action:hover { border-color: var(--gold); background: rgba(212,175,55,0.1); transform: translateY(-2px); }
+  .billing-action-title { font-size: 13px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+  
+  .transaction-list { display: flex; flex-direction: column; gap: 10px; }
+  .tx-item { display: flex; justify-content: space-between; font-size: 13px; padding: 10px 14px; background: rgba(255,255,255,0.02); border-radius: 6px; align-items: center; }
+  .tx-amount { color: var(--gold); font-weight: 700; font-family: var(--font-mono); }
+
+  /* ─── COMPOSIO / AESTHETICS ─── */
+  .social-hub { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .social-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 10px; background: var(--surface); border-radius: 10px; border: 1px solid rgba(212,175,55,0.1); transition: 0.3s; }
+  .social-icon { width: 24px; height: 24px; filter: grayscale(1); opacity: 0.4; transition: 0.4s; }
+  .social-item.connected .social-icon { filter: grayscale(0); opacity: 1; }
+  .social-item.connected { border-color: var(--rose); background: rgba(233,30,99,0.03); }
+  .social-name { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+
+  /* ─── FEED / TERMINAL ─── */
+  .feed { display: flex; flex-direction: column; gap: 12px; font-family: var(--font-mono); font-size: 12px; height: 320px; overflow-y: auto; padding-right: 12px; }
+  .feed-item { padding: 12px; background: rgba(255,255,255,0.01); border-radius: 8px; border-left: 3px solid var(--rose); animation: slideIn 0.4s ease-out; position: relative; }
+  .feed-time { color: var(--rose); font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+  .feed-msg { color: var(--light); opacity: 0.9; line-height: 1.4; }
+
+  /* ─── RIGHT PANEL ─── */
+  .right-panel { display: flex; flex-direction: column; gap: 24px; }
+  
+  .video-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid rgba(212,175,55,0.1); }
+  .video-preview { aspect-ratio: 9/16; background: linear-gradient(180deg, var(--surface), var(--obsidian)); display: flex; align-items: center; justify-content: center; position: relative; }
+  .play-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; color: var(--obsidian); font-size: 20px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
+  .play-btn:hover { transform: scale(1.1); }
+  .video-label { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 600; color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+  .content-queue { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .queue-item { display: flex; gap: 12px; align-items: center; }
+  .queue-thumb { width: 40px; height: 40px; background: var(--surface); border-radius: 4px; flex-shrink: 0; }
+  .queue-info { display: flex; flex-direction: column; gap: 2px; }
+  .queue-title { font-size: 12px; font-weight: 600; }
+  .queue-meta { font-size: 10px; color: var(--muted); }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--obsidian); }
+  ::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 10px; border: 1px solid rgba(212,175,55,0.1); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+  @media (max-width: 1200px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .sidebar, .right-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">LAISA <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="laisa-agent-os.html" class="nav-link active">Elegance Hub</a>
+    <a href="safesight-agent-os.html" class="nav-link">Switch to SafeSight</a>
+    <a href="#" class="nav-link">Aesthetic CRM</a>
+    <a href="#" class="nav-link">Campaigns</a>
+  </div>
+  <div class="system-status">
+    <div class="status-item"><div class="live-dot"></div> ORGO VM-02: ACTIVE</div>
+    <div class="status-item"><div class="live-dot"></div> MEMORY SYNC: 100%</div>
+    <div class="status-item" id="systemClock">12:00:00</div>
+  </div>
+</div>
+
+<div class="main-grid">
+  <!-- LEFT: LUXURY AGENTS -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Digital Concierge <span>ACTIVE</span></div>
+      <div class="agent-list" id="agentList">
+        <!-- Agents populated by JS -->
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Brand Resonance</div>
+      <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px; font-style: italic;">"Aspirational Excellence in Every Interaction"</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>Visual Consistency</span>
+          <span style="color: var(--gold);">98%</span>
+        </div>
+        <div style="height: 4px; background: var(--surface); border-radius: 2px; overflow: hidden;">
+          <div style="width: 98%; height: 100%; background: linear-gradient(90deg, var(--gold), var(--rose));"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: AESTHETIC INTEL -->
+  <div class="content">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Daily Billings</div>
+        <div class="stat-value" id="statRevenue">R0</div>
+        <div class="stat-sub">↑ 22% Luxury Growth</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">New Enquiries</div>
+        <div class="stat-value" id="statPatients">0</div>
+        <div class="stat-sub">8 Warm Leads</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Social Reach</div>
+        <div class="stat-value" id="statSocial">0</div>
+        <div class="stat-sub">↑ 1.2K Engagement</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Agent Uptime</div>
+        <div class="stat-value">99.98%</div>
+        <div class="stat-sub">Elite Hosting</div>
+      </div>
+    </div>
+
+    <!-- REVENUE & PAYMENTS -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Elegance Revenue Management</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--rose);">SECURE GATEWAY ACTIVE</div>
+      </div>
+      <div class="billing-grid">
+        <div class="billing-action" onclick="window.dispatchEvent(new CustomEvent('agentos:action', {detail: {action: 'Generate Private Payment Link', agent: 'CashClaw'}}))">
+          <div class="billing-action-title">Create Private Payment Link</div>
+          <div style="font-size: 10px; color: var(--muted); margin-top: 4px;">Premium SMS Delivery</div>
+        </div>
+        <div class="billing-action">
+          <div class="billing-action-title">Membership Status</div>
+          <div style="font-size: 10px; color: var(--muted); margin-top: 4px;">Elite Loyalty Tier Sync</div>
+        </div>
+      </div>
+      <div class="transaction-list">
+        <div class="tx-item"><span>Full Face Rejuvenation - L. Mokoena</span><span class="tx-amount">R24,500</span></div>
+        <div class="tx-item"><span>Elite Membership Renewal - C. Botha</span><span class="tx-amount">R8,200</span></div>
+        <div class="tx-item"><span>Chemical Peel Series - Z. Khumalo</span><span class="tx-amount">R12,000</span></div>
+      </div>
+    </div>
+
+    <!-- COMPOSIO / MARKETING -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Social Resonance Hub (Naledi)</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--gold);">MULTI-CHANNEL SYNC ACTIVE</div>
+      </div>
+      <div class="social-hub">
+        <div class="social-item connected">
+          <img src="https://www.facebook.com/favicon.ico" class="social-icon" alt="FB">
+          <div class="social-name">FB</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://www.instagram.com/static/images/ico/favicon.ico/36b30483518d.ico" class="social-icon" alt="IG">
+          <div class="social-name">IG</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://whatsapp.com/favicon.ico" class="social-icon" alt="WA">
+          <div class="social-name">WA</div>
+        </div>
+        <div class="social-item connected">
+          <img src="https://telegram.org/favicon.ico" class="social-icon" alt="TG">
+          <div class="social-name">TG</div>
+        </div>
+        <div class="social-item">
+          <img src="https://www.google.com/favicon.ico" class="social-icon" alt="Ads">
+          <div class="social-name">Ads</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <button style="flex: 1.5; padding: 12px; background: linear-gradient(90deg, var(--gold), var(--gold-dim)); border: none; color: var(--obsidian); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase;">Generate Daily Content Set</button>
+        <button style="flex: 1; padding: 12px; background: transparent; border: 1px solid var(--rose); color: var(--rose); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Review Calendar</button>
+      </div>
+    </div>
+
+    <!-- MISSION LOG -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Agentic Intelligence Stream</div>
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--muted);">LIVE ORCHESTRATION</div>
+      </div>
+      <div class="feed" id="activityFeed">
+        <!-- Feed populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: HIGGSFIELD & COMMS -->
+  <div class="right-panel">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Higgsfield AI Video</div>
+      <div class="video-card">
+        <div class="video-preview">
+          <div class="play-btn">▶</div>
+          <div class="video-label">The Art of Aging Gracefully</div>
+        </div>
+        <div style="padding: 16px;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--gold);">RECENT GENERATIONS</div>
+          <div class="content-queue">
+            <div class="queue-item">
+              <div class="queue-thumb"></div>
+              <div class="queue-info">
+                <div class="queue-title">Skin Longevity Series</div>
+                <div class="queue-meta">HD • 15s • Ready</div>
+              </div>
+            </div>
+            <div class="queue-item">
+              <div class="queue-thumb"></div>
+              <div class="queue-info">
+                <div class="queue-title">Clinic Ambience Walkthrough</div>
+                <div class="queue-meta">HD • 30s • Rendering</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="border-top: 2px solid var(--rose);">
+      <div class="sidebar-title">Luxury Comms (Charlie)</div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 13px;">Voice Character</div>
+          <div style="font-size: 11px; color: var(--rose); font-weight: 700;">LAISA SOPHISTICATE</div>
+        </div>
+        <div style="height: 30px; background: rgba(233,30,99,0.05); border-radius: 15px; display: flex; align-items: center; padding: 0 15px; gap: 10px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--rose);"></div>
+          <div style="font-size: 11px; font-family: var(--font-mono);">ElevenLabs Call Active...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">AgentMail Delivery</div>
+      <div class="transaction-list">
+        <div class="tx-item" style="font-size: 11px;"><span>Content Performance Report</span><span style="color: var(--green);">DELIVERED</span></div>
+        <div class="tx-item" style="font-size: 11px;"><span>VIP Client Briefing</span><span style="color: var(--gold);">DRAFTING</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="src/agent-os-orchestrator.js"></script>
+<script>
+  // Dashboard Specific UI Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const activityFeed = document.getElementById('activityFeed');
+    const agentList = document.getElementById('agentList');
+    const statRevenue = document.getElementById('statRevenue');
+    const statPatients = document.getElementById('statPatients');
+    const statSocial = document.getElementById('statSocial');
+    const systemClock = document.getElementById('systemClock');
+
+    // Clock
+    setInterval(() => {
+      systemClock.textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    // Initial Agents
+    if (window.AgentOrchestrator) {
+      updateAgentList(window.AgentOrchestrator.agents);
+    }
+
+    // Listen for events
+    window.addEventListener('agentos:activity', (e) => {
+      const item = document.createElement('div');
+      item.className = 'feed-item';
+      item.innerHTML = `<div class="feed-time">${e.detail.time}</div><div class="feed-msg">${e.detail.message}</div>`;
+      activityFeed.prepend(item);
+      if (activityFeed.children.length > 50) activityFeed.lastChild.remove();
+    });
+
+    window.addEventListener('agentos:agentUpdate', (e) => {
+      updateAgentList(window.AgentOrchestrator.agents);
+    });
+
+    window.addEventListener('agentos:statsUpdate', (e) => {
+      statRevenue.textContent = 'R' + e.detail.revenue.toLocaleString();
+      statPatients.textContent = e.detail.patientVolume;
+      statSocial.textContent = (e.detail.socialEngagement / 100).toFixed(1) + 'K';
+    });
+
+    function updateAgentList(agents) {
+      agentList.innerHTML = agents.map(a => `
+        <div class="agent-item">
+          <div class="agent-avatar">${a.name[0]}</div>
+          <div class="agent-info">
+            <div class="agent-name">${a.name} <span class="${a.status === 'Active' ? 'live-dot' : 'thinking-dot'}" style="display:inline-block; margin-left:4px;"></span></div>
+            <div class="agent-task">${a.task}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  });
+</script>
+
+</body>
+</html>
