@@ -811,7 +811,38 @@
   </div>
 </section>
 
-<!-- 10. FOOTER -->
+<!-- 10. CONTACT -->
+<section class="section" id="contact" style="text-align:center;">
+  <div class="section-header" style="text-align:center;">
+    <h2>Get in Touch</h2>
+    <p>Book your consultation today. No referral letter needed.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:0 auto;text-align:left;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;">
+      <div style="font-family:var(--font-heading);font-size:22px;color:var(--gold);margin-bottom:16px;">SafeSight Cataract &amp; Eye Laser Centre</div>
+      <div style="font-size:16px;color:var(--light);line-height:1.8;">
+        <div><strong>Phone:</strong> +27 11 346 5025</div>
+        <div><strong>WhatsApp:</strong> +27 81 545 5385</div>
+        <div><strong>Hours:</strong> MON–FRI 08:00 – 17:00</div>
+      </div>
+      <a href="https://wa.me/27815455385?text=Hi%20SafeSight%2C%20I'd%20like%20to%20book%20a%20consultation" target="_blank" class="cta-btn" style="margin-top:20px;display:inline-block;">Book via WhatsApp</a>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;">
+      <div style="font-family:var(--font-heading);font-size:22px;color:var(--gold);margin-bottom:16px;">LAISA Aesthetic Clinic</div>
+      <div style="font-size:16px;color:var(--light);line-height:1.8;">
+        <div><strong>Phone:</strong> +27 11 346 5088</div>
+        <div><strong>WhatsApp:</strong> +27 81 545 5385</div>
+        <div><strong>Hours:</strong> MON–FRI 09:00 – 17:00</div>
+      </div>
+      <a href="https://wa.me/27815455385?text=Hi%20LAISA%2C%20I'd%20like%20to%20book%20a%20consultation" target="_blank" class="cta-btn" style="margin-top:20px;display:inline-block;">Book via WhatsApp</a>
+    </div>
+  </div>
+  <p style="margin-top:28px;font-size:15px;color:var(--muted);">
+    Please Note: You do not need a referral letter to see any of our consultants, however, it is preferable when you are consulting us for a medical issue rather than a vision issue.
+  </p>
+</section>
+
+<!-- 11. FOOTER -->
 <footer class="footer">
   <div class="gold-line"></div>
   <div>Powered by Studex Group &copy; 2026</div>
@@ -1100,38 +1131,57 @@ function addWaMsg(text, type) {
 function showWaTyping() { waTyping.classList.add('show'); waChat.scrollTop = waChat.scrollHeight; }
 function hideWaTyping() { waTyping.classList.remove('show'); }
 
-// Mock conversation flow
-const waFlow = [
-  { who: 'bot', text: "Welcome to SafeSight x LAISA! 👋 How can we help you today?" },
-  { who: 'user', text: "Hi, I'd like to book a consultation" },
-  { who: 'bot', text: "Sure, which doctor and what date? We have availability with Dr. Naidoo tomorrow at 10 AM or Dr. Govender on Thursday at 2 PM." },
-  { who: 'user', text: "Dr. Naidoo tomorrow please" },
-  { who: 'bot', text: "Confirmed! 🎉\nDr. Sarah Naidoo — Medical Director\nTomorrow 10:00 AM\nStatus: Confirmed\n\nYou'll receive a reminder 24 hours before. Is there anything else?" },
-  { who: 'user', text: "That's all, thank you" },
-  { who: 'bot', text: "You're welcome! We look forward to seeing you. SafeSight — Clinical Intelligence. Aesthetic Excellence. ✨" }
-];
+// Interactive WhatsApp Bot
+const botReplies = {
+  'book': "Sure! Which doctor would you prefer?\n• Dr. Tebogo Maleka — Ophthalmologist\n• Dr. Thabiso Mofokeng — Ophthalmologist\n• Dr. Thembani Mentor — Aesthetic Physician",
+  'consultation': "Sure! Which doctor would you prefer?\n• Dr. Tebogo Maleka — Ophthalmologist\n• Dr. Thabiso Mofokeng — Ophthalmologist\n• Dr. Thembani Mentor — Aesthetic Physician",
+  'appointment': "Sure! Which doctor would you prefer?\n• Dr. Tebogo Maleka — Ophthalmologist\n• Dr. Thabiso Mofokeng — Ophthalmologist\n• Dr. Thembani Mentor — Aesthetic Physician",
+  'maleka': "Dr. Tebogo Maleka is available:\n• Tomorrow 10:00 AM\n• Thursday 14:00 PM\nReply with the day and time you prefer.",
+  'mofokeng': "Dr. Thabiso Mofokeng is available:\n• Tomorrow 11:30 AM\n• Friday 09:00 AM\nReply with the day and time you prefer.",
+  'mentor': "Dr. Thembani Mentor is available:\n• Tomorrow 14:00 PM\n• Wednesday 10:00 AM\nReply with the day and time you prefer.",
+  'tomorrow': "Confirmed! 🎉\nTomorrow — Status: Confirmed\nYou'll receive a reminder 24 hours before. Is there anything else?",
+  'price': "Our consultation fees:\n• Initial Eye Consultation: R850\n• Aesthetic Assessment: R650\n• Follow-up: R450\nWould you like to book?",
+  'cost': "Our consultation fees:\n• Initial Eye Consultation: R850\n• Aesthetic Assessment: R650\n• Follow-up: R450\nWould you like to book?",
+  'hours': "Our hours are:\n• SafeSight: MON–FRI 08:00 – 17:00\n• LAISA: MON–FRI 09:00 – 17:00",
+  'time': "Our hours are:\n• SafeSight: MON–FRI 08:00 – 17:00\n• LAISA: MON–FRI 09:00 – 17:00",
+  'address': "We are in Johannesburg, South Africa. Call +27 11 346 5025 for directions.",
+  'location': "We are in Johannesburg, South Africa. Call +27 11 346 5025 for directions.",
+  'phone': "SafeSight: +27 11 346 5025\nLAISA: +27 11 346 5088\nWhatsApp: +27 81 545 5385",
+  'contact': "SafeSight: +27 11 346 5025\nLAISA: +27 11 346 5088\nWhatsApp: +27 81 545 5385",
+  'help': "You can ask me about:\n• Booking a consultation\n• Doctor availability\n• Pricing\n• Opening hours\n• Contact details",
+  'default': "I'm DenchClaw, SafeSight's AI booking assistant. I can help you book a consultation, check doctor availability, or answer questions about our services. What would you like to do?"
+};
 
-let waIndex = 0;
-function runWaFlow() {
-  if (waIndex >= waFlow.length) return;
-  const step = waFlow[waIndex];
-  if (step.who === 'bot') {
-    showWaTyping();
-    setTimeout(() => {
-      hideWaTyping();
-      addWaMsg(step.text, 'bot');
-      waIndex++;
-      setTimeout(runWaFlow, 1200);
-    }, 1200);
-  } else {
-    addWaMsg(step.text, 'user');
-    waIndex++;
-    setTimeout(runWaFlow, 900);
+function getBotReply(text) {
+  const lower = text.toLowerCase();
+  for (const key in botReplies) {
+    if (lower.includes(key)) return botReplies[key];
   }
+  return botReplies['default'];
 }
 
-// Delayed start for WhatsApp conversation
-setTimeout(runWaFlow, 800);
+function handleWaSend() {
+  const input = document.querySelector('.wa-input');
+  const text = input.value.trim();
+  if (!text) return;
+  addWaMsg(text, 'user');
+  input.value = '';
+  showWaTyping();
+  setTimeout(() => {
+    hideWaTyping();
+    addWaMsg(getBotReply(text), 'bot');
+  }, 800 + Math.random() * 600);
+}
+
+// Make input editable and wire send button
+document.querySelector('.wa-input').removeAttribute('readonly');
+document.querySelector('.wa-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleWaSend(); });
+document.querySelector('.wa-send').addEventListener('click', handleWaSend);
+
+// Welcome message
+setTimeout(() => {
+  addWaMsg("Welcome to SafeSight x LAISA! 👋 I'm DenchClaw, your AI booking assistant. How can we help you today?", 'bot');
+}, 600);
 </script>
 
 </body>
