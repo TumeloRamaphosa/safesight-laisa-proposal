@@ -649,7 +649,6 @@
   .specialist-photo {
     width: 100%;
     height: 280px;
-    background: linear-gradient(135deg, #0F1F35, #162D4F);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -657,14 +656,14 @@
     overflow: hidden;
   }
 
-  .specialist-photo::after {
-    content: '';
+  .specialist-photo-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    background: linear-gradient(to top, var(--navy), transparent);
+    height: 100%;
+    background: linear-gradient(to top, var(--navy) 0%, transparent 50%);
+    pointer-events: none;
   }
 
   .specialist-avatar {
@@ -1380,39 +1379,33 @@
     </div>
     <div class="specialists-grid">
       <div class="specialist-card reveal">
-        <div class="specialist-photo">
-          <div class="specialist-avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          </div>
+        <div class="specialist-photo" style="background: url('https://safesight.co.za/wp-content/uploads/2016/09/Dr-Maleka.jpg') center/cover no-repeat;">
+          <div class="specialist-photo-overlay"></div>
         </div>
         <div class="specialist-info">
-          <h3>Dr. Thabo Mokoena</h3>
-          <div class="specialist-specialty">Cataract &amp; Refractive Surgery</div>
-          <div class="specialist-creds">MBChB (Wits), FCS(SA) Ophth, FRCS(Edin)<br>22 years surgical experience<br>Former Head of Ophthalmology &mdash; Chris Hani Baragwanath Hospital</div>
+          <h3>Dr. Tebogo Maleka</h3>
+          <div class="specialist-specialty">Specialist Ophthalmologist</div>
+          <div class="specialist-creds">Expert in tailored laser vision correction, keratoconus care, and cataract operations. Dedicated to restoring clarity and improving quality of life through precision surgery.</div>
         </div>
       </div>
       <div class="specialist-card reveal">
-        <div class="specialist-photo">
-          <div class="specialist-avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          </div>
+        <div class="specialist-photo" style="background: url('https://safesight.co.za/wp-content/uploads/2023/11/5P0A1438-scaled.jpg') center/cover no-repeat;">
+          <div class="specialist-photo-overlay"></div>
         </div>
         <div class="specialist-info">
-          <h3>Dr. Priya Naidoo</h3>
-          <div class="specialist-specialty">Glaucoma &amp; Neuro-Ophthalmology</div>
-          <div class="specialist-creds">MBChB (UCT), FCS(SA) Ophth, MMed Ophth<br>18 years specialising in glaucoma<br>Published researcher &mdash; SA Journal of Ophthalmology</div>
+          <h3>Dr. Thabiso Mofokeng</h3>
+          <div class="specialist-specialty">General Ophthalmologist</div>
+          <div class="specialist-creds">Specializing in keratoconus, glaucoma, and refractive laser vision correction. A dedicated clinician focused on comprehensive eye health and patient education.</div>
         </div>
       </div>
       <div class="specialist-card reveal">
-        <div class="specialist-photo">
-          <div class="specialist-avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          </div>
+        <div class="specialist-photo" style="background: url('https://safesight.co.za/wp-content/uploads/2025/08/WhatsApp-Image-2025-08-12-at-13.35.03.jpeg') center/cover no-repeat;">
+          <div class="specialist-photo-overlay"></div>
         </div>
         <div class="specialist-info">
-          <h3>Dr. Anand Pillay</h3>
-          <div class="specialist-specialty">Retina &amp; Vitreoretinal Surgery</div>
-          <div class="specialist-creds">MBChB (Natal), FCS(SA) Ophth, Fellowship Retina (Moorfields, London)<br>20 years in vitreoretinal surgery<br>Pioneer of MIGS procedures in Southern Africa</div>
+          <h3>Dr. Thembani Mentor</h3>
+          <div class="specialist-specialty">Aesthetic Physician</div>
+          <div class="specialist-creds">Leading aesthetic medicine, wellbeing, and age-management solutions. Crafting personalized treatment plans that enhance natural beauty and promote holistic wellness.</div>
         </div>
       </div>
     </div>
