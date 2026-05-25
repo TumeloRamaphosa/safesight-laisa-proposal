@@ -156,7 +156,20 @@
     border: 2px solid rgba(201,168,76,0.3);
   }
   .doctor-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-  .doctor-role { font-size: 12px; color: var(--muted); }
+  .doctor-role { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .doctor-photo {
+    width: 72px; height: 72px; border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 14px;
+    border: 2px solid rgba(201,168,76,0.3);
+    display: block;
+  }
+  .doctor-bio {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+    margin-top: 4px;
+  }
 
   /* ─── AGENT COMMAND CENTER ─── */
   .agents-grid {
@@ -552,24 +565,25 @@
 
   <div class="doctors-grid">
     <div class="doctor-card">
-      <div class="doctor-avatar">SN</div>
-      <div class="doctor-name">Dr. Sarah Naidoo</div>
-      <div class="doctor-role">Medical Director</div>
+      <img src="https://safesight.co.za/wp-content/uploads/2016/09/Dr-Maleka.jpg" alt="Dr. Tebogo Maleka" class="doctor-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="doctor-avatar" style="display:none;">TM</div>
+      <div class="doctor-name">Dr. Tebogo Maleka</div>
+      <div class="doctor-role">Specialist Ophthalmologist</div>
+      <div class="doctor-bio">Expert in tailored laser vision correction, keratoconus care, and cataract removal.</div>
     </div>
     <div class="doctor-card">
-      <div class="doctor-avatar">JM</div>
-      <div class="doctor-name">Dr. James Mokoena</div>
-      <div class="doctor-role">Ophthalmic Surgeon</div>
+      <img src="https://safesight.co.za/wp-content/uploads/2023/11/5P0A1438-scaled.jpg" alt="Dr. Thabiso Mofokeng" class="doctor-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="doctor-avatar" style="display:none;">TM</div>
+      <div class="doctor-name">Dr. Thabiso Mofokeng</div>
+      <div class="doctor-role">General Ophthalmologist</div>
+      <div class="doctor-bio">Focused on glaucoma, keratoconus, and laser-based sight correction.</div>
     </div>
     <div class="doctor-card">
-      <div class="doctor-avatar">PG</div>
-      <div class="doctor-name">Dr. Priya Govender</div>
-      <div class="doctor-role">Aesthetic Specialist</div>
-    </div>
-    <div class="doctor-card">
-      <div class="doctor-avatar">LD</div>
-      <div class="doctor-name">Dr. Lwazi Dlamini</div>
-      <div class="doctor-role">Patient Care Lead</div>
+      <img src="https://safesight.co.za/wp-content/uploads/2025/08/WhatsApp-Image-2025-08-12-at-13.35.03.jpeg" alt="Dr. Thembani Mentor" class="doctor-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="doctor-avatar" style="display:none;">TM</div>
+      <div class="doctor-name">Dr. Thembani Mentor</div>
+      <div class="doctor-role">Aesthetic Physician</div>
+      <div class="doctor-bio">General medicine with emphasis on cosmetic treatments, wellbeing, and age-reversal.</div>
     </div>
   </div>
 </section>
