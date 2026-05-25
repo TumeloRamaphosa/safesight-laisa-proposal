@@ -1,0 +1,116 @@
+{
+  "$schema": "./composio-config.schema.json",
+  "mode": "simulated",
+  "refreshIntervalMinutes": 15,
+  "outputPath": "public/social-metrics.json",
+  "accounts": {
+    "instagram": {
+      "toolkit": "instagram",
+      "connectedAccountId": "",
+      "version": "",
+      "metrics": [
+        {
+          "dashboardKey": "instagramFollowers",
+          "tool": "INSTAGRAM_BUSINESS_GET_ACCOUNT",
+          "params": { "fields": "followers_count" }
+        },
+        {
+          "dashboardKey": "instagramProfileViews7d",
+          "tool": "INSTAGRAM_BUSINESS_GET_INSIGHTS",
+          "params": { "metric": "profile_views", "period": "week" }
+        },
+        {
+          "dashboardKey": "instagramRecentMedia",
+          "tool": "INSTAGRAM_BUSINESS_GET_MEDIA",
+          "params": { "limit": 6 }
+        },
+        {
+          "dashboardKey": "instagramEngagement7d",
+          "tool": "INSTAGRAM_BUSINESS_GET_MEDIA_INSIGHTS",
+          "params": { "metric": "engagement", "period": "week" }
+        }
+      ]
+    },
+    "googleAnalytics": {
+      "toolkit": "google-analytics",
+      "connectedAccountId": "",
+      "version": "",
+      "propertyId": "",
+      "metrics": [
+        {
+          "dashboardKey": "gaSessions7d",
+          "tool": "GOOGLE_ANALYTICS_GET_REPORT",
+          "params": {
+            "property": "properties/{propertyId}",
+            "dateRanges": [{ "startDate": "7daysAgo", "endDate": "today" }],
+            "metrics": [{ "name": "sessions" }]
+          }
+        },
+        {
+          "dashboardKey": "gaPageViews7d",
+          "tool": "GOOGLE_ANALYTICS_GET_REPORT",
+          "params": {
+            "property": "properties/{propertyId}",
+            "dateRanges": [{ "startDate": "7daysAgo", "endDate": "today" }],
+            "metrics": [{ "name": "screenPageViews" }]
+          }
+        },
+        {
+          "dashboardKey": "gaTopPages",
+          "tool": "GOOGLE_ANALYTICS_GET_REPORT",
+          "params": {
+            "property": "properties/{propertyId}",
+            "dateRanges": [{ "startDate": "7daysAgo", "endDate": "today" }],
+            "metrics": [{ "name": "screenPageViews" }],
+            "dimensions": [{ "name": "pagePath" }],
+            "limit": 5
+          }
+        }
+      ]
+    },
+    "whatsapp": {
+      "toolkit": "whatsapp",
+      "connectedAccountId": "",
+      "version": "",
+      "metrics": [
+        {
+          "dashboardKey": "waMessages24h",
+          "tool": "WHATSAPP_GET_ANALYTICS",
+          "params": { "period": "24h" }
+        },
+        {
+          "dashboardKey": "waConversations24h",
+          "tool": "WHATSAPP_GET_ANALYTICS",
+          "params": { "metric": "conversations", "period": "24h" }
+        }
+      ]
+    }
+  },
+  "dashboardMapping": {
+    "statSocial": {
+      "source": "instagram",
+      "field": "instagramFollowers",
+      "transform": "number"
+    },
+    "socialEngagementSub": {
+      "source": "instagram",
+      "field": "instagramEngagement7d",
+      "transform": "deltaPrefix"
+    },
+    "gaSessions": {
+      "source": "googleAnalytics",
+      "field": "gaSessions7d",
+      "transform": "number"
+    },
+    "gaPageViews": {
+      "source": "googleAnalytics",
+      "field": "gaPageViews7d",
+      "transform": "number"
+    },
+    "waMessages": {
+      "source": "whatsapp",
+      "field": "waMessages24h",
+      "transform": "number"
+    }
+  }
+}

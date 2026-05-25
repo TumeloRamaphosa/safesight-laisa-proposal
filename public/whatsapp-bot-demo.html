@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SafeSight x LAISA - WhatsApp Booking Assistant</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --obsidian: #0A0A0A;
+    --surface: #111111;
+    --card: #1A1A1A;
+    --gold: #C9A84C;
+    --gold-dim: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.25);
+    --light: #F5F0E8;
+    --muted: #8A8478;
+    --bubble-bot: #1E1E1E;
+    --bubble-user: #2A2318;
+    --whatsapp-green: #25D366;
+    --whatsapp-dark: #075E54;
+    --border: #2A2A2A;
+  }
+
+  body {
+    background: var(--obsidian);
+    color: var(--light);
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 375px;
+    min-height: 100vh;
+    background: var(--obsidian);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 80px rgba(201, 168, 76, 0.06);
+  }
+
+  @media (min-width: 420px) {
+    body { padding: 20px 0; align-items: center; }
+    .phone-frame {
+      min-height: 92vh;
+      max-height: 92vh;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+    }
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .header-back {
+    color: var(--gold);
+    font-size: 20px;
+    cursor: pointer;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .header-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #8B6914);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .header-avatar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--whatsapp-green);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+  }
+
+  .header-info { flex: 1; min-width: 0; }
+
+  .header-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-status {
+    font-size: 12px;
+    color: var(--whatsapp-green);
+    margin-top: 1px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 18px;
+    color: var(--muted);
+    font-size: 18px;
+  }
+
+  /* Chat area */
+  .chat-bg {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px 8px;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      var(--obsidian);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    scroll-behavior: smooth;
+  }
+
+  .chat-bg::-webkit-scrollbar { width: 3px; }
+  .chat-bg::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Messages */
+  .msg-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+    animation: msgIn 0.3s ease;
+  }
+
+  .msg-row.bot { align-self: flex-start; }
+  .msg-row.user { align-self: flex-end; }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-bubble {
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    line-height: 1.45;
+    position: relative;
+    word-wrap: break-word;
+  }
+
+  .msg-row.bot .msg-bubble {
+    background: var(--bubble-bot);
+    color: var(--light);
+    border-top-left-radius: 3px;
+  }
+
+  .msg-row.user .msg-bubble {
+    background: var(--bubble-user);
+    color: var(--gold);
+    border-top-right-radius: 3px;
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+
+  .msg-label {
+    font-size: 10.5px;
+    color: var(--gold);
+    margin-bottom: 2px;
+    padding-left: 2px;
+    font-weight: 500;
+  }
+
+  .msg-time {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    text-align: right;
+    padding-right: 2px;
+  }
+
+  .msg-row.bot .msg-time { text-align: left; padding-left: 2px; padding-right: 0; }
+
+  /* Service list */
+  .service-group {
+    margin: 6px 0 2px;
+  }
+
+  .service-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .service-item {
+    font-size: 13px;
+    color: var(--light);
+    padding: 3px 0 3px 10px;
+    position: relative;
+  }
+
+  .service-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* Appointment card */
+  .appt-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 6px 0;
+  }
+
+  .appt-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .appt-card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .appt-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .appt-card-sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .appt-card-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+
+  .appt-card-detail-label { color: var(--muted); }
+  .appt-card-detail-value { color: var(--light); font-weight: 500; }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: none;
+    align-self: flex-start;
+    padding: 12px 16px;
+    background: var(--bubble-bot);
+    border-radius: 10px;
+    border-top-left-radius: 3px;
+    margin-bottom: 2px;
+  }
+
+  .typing-indicator.show { display: flex; gap: 4px; align-items: center; }
+
+  .typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: typingBounce 1.4s infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Quick replies */
+  .quick-replies {
+    padding: 8px 14px 10px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+    min-height: 52px;
+  }
+
+  .quick-reply {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .quick-reply:hover {
+    background: var(--gold);
+    color: var(--obsidian);
+  }
+
+  .quick-reply:active {
+    transform: scale(0.95);
+  }
+
+  .quick-reply.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Input bar */
+  .input-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-field {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    cursor: default;
+  }
+
+  .input-send {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: none;
+    color: var(--obsidian);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.1s;
+  }
+
+  .input-send:active { transform: scale(0.9); }
+
+  /* Encrypted notice */
+  .encrypted-notice {
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    padding: 10px 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  /* Date chip */
+  .date-display {
+    display: inline-block;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-back">&lsaquo;</div>
+    <div class="header-avatar">S</div>
+    <div class="header-info">
+      <div class="header-name">SafeSight x LAISA</div>
+      <div class="header-status">Online</div>
+    </div>
+    <div class="header-actions">
+      <span>&#128242;</span>
+      <span>&#8942;</span>
+    </div>
+  </div>
+
+  <!-- Chat area -->
+  <div class="chat-bg" id="chatArea">
+    <div class="encrypted-notice">
+      <span>&#128274;</span> Messages are end-to-end encrypted
+    </div>
+  </div>
+
+  <!-- Typing indicator -->
+  <div class="typing-indicator" id="typingIndicator">
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  </div>
+
+  <!-- Quick replies -->
+  <div class="quick-replies" id="quickReplies"></div>
+
+  <!-- Input bar -->
+  <div class="input-bar">
+    <input class="input-field" type="text" value="Tap a button to reply" readonly />
+    <button class="input-send">&#10148;</button>
+  </div>
+</div>
+
+<script>
+const chatArea = document.getElementById('chatArea');
+const quickRepliesEl = document.getElementById('quickReplies');
+const typingIndicator = document.getElementById('typingIndicator');
+
+// State
+let state = {
+  clinic: null,
+  doctor: null,
+  date: null,
+  time: null,
+  flow: 'start'
+};
+
+// Helpers
+function getTime() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  m = m < 10 ? '0' + m : m;
+  return h + ':' + m + ' ' + ampm;
+}
+
+function formatDate(d) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function addMsg(text, type, extra) {
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + type;
+
+  let html = '';
+
+  if (type === 'bot') {
+    html += '<div class="msg-label">AI Assistant</div>';
+  }
+
+  html += '<div class="msg-bubble">';
+  if (extra === 'appt-card') {
+    // appointment card handled via inner injection
+  } else if (extra === 'services') {
+    // services handled via inner injection
+  } else {
+    html += text;
+  }
+  html += '</div>';
+  html += '<div class="msg-time">' + getTime() + '</div>';
+
+  row.innerHTML = html;
+  chatArea.appendChild(row);
+  scrollToBottom();
+}
+
+function addBotMsg(text) { addMsg(text, 'bot'); }
+
+function addUserMsg(text) { addMsg(text, 'user'); }
+
+function addServiceMsg() {
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `
+    <div class="msg-label">AI Assistant</div>
+    <div class="msg-bubble">
+      Here are our services:
+      <div class="service-group">
+        <div class="service-group-title">SafeSight Eye Surgery</div>
+        <div class="service-item">Cataract Surgery</div>
+        <div class="service-item">LASIK / Refractive Surgery</div>
+        <div class="service-item">Glaucoma Treatment</div>
+        <div class="service-item">General Eye Care & Exams</div>
+      </div>
+      <div class="service-group" style="margin-top:8px;">
+        <div class="service-group-title">LAISA Aesthetics</div>
+        <div class="service-item">Botox & Anti-Wrinkle</div>
+        <div class="service-item">Dermal Fillers</div>
+        <div class="service-item">Skin Treatments & Peels</div>
+        <div class="service-item">Body Contouring</div>
+      </div>
+      Anything else I can help with?
+    </div>
+    <div class="msg-time">${getTime()}</div>`;
+  chatArea.appendChild(row);
+  scrollToBottom();
+}
+
+function addApptCardMsg(doctor, clinic, date, time) {
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  const icon = clinic.toLowerCase().includes('sight') ? '&#128065;' : '&#10024;';
+  row.innerHTML = `
+    <div class="msg-label">AI Assistant</div>
+    <div class="msg-bubble" style="padding:6px 8px;">
+      Appointment confirmed!
+      <div class="appt-card">
+        <div class="appt-card-header">
+          <div class="appt-card-icon">${icon}</div>
+          <div>
+            <div class="appt-card-title">${clinic}</div>
+            <div class="appt-card-sub">Upcoming Appointment</div>
+          </div>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Doctor</span>
+          <span class="appt-card-detail-value">${doctor}</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Date</span>
+          <span class="appt-card-detail-value">${date}</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Time</span>
+          <span class="appt-card-detail-value">${time}</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Status</span>
+          <span class="appt-card-detail-value" style="color:#25D366;">Confirmed</span>
+        </div>
+      </div>
+      You'll receive a reminder 24 hours before. Is there anything else?
+    </div>
+    <div class="msg-time">${getTime()}</div>`;
+  chatArea.appendChild(row);
+  scrollToBottom();
+}
+
+function addCheckApptMsg() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dateStr = formatDate(tomorrow);
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `
+    <div class="msg-label">AI Assistant</div>
+    <div class="msg-bubble" style="padding:6px 8px;">
+      Here's your upcoming appointment:
+      <div class="appt-card">
+        <div class="appt-card-header">
+          <div class="appt-card-icon">&#128065;</div>
+          <div>
+            <div class="appt-card-title">SafeSight Eye Surgery</div>
+            <div class="appt-card-sub">Upcoming Appointment</div>
+          </div>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Doctor</span>
+          <span class="appt-card-detail-value">Dr. Mokoena - Ophthalmology</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Date</span>
+          <span class="appt-card-detail-value">${dateStr}</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Time</span>
+          <span class="appt-card-detail-value">10:00 AM</span>
+        </div>
+        <div class="appt-card-detail">
+          <span class="appt-card-detail-label">Ref</span>
+          <span class="appt-card-detail-value">#SS-2026-0482</span>
+        </div>
+      </div>
+      Would you like to make any changes?
+    </div>
+    <div class="msg-time">${getTime()}</div>`;
+  chatArea.appendChild(row);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    chatArea.scrollTop = chatArea.scrollHeight;
+  });
+}
+
+function showTyping() {
+  typingIndicator.classList.add('show');
+  scrollToBottom();
+}
+
+function hideTyping() {
+  typingIndicator.classList.remove('show');
+}
+
+function setQuickReplies(replies) {
+  quickRepliesEl.innerHTML = '';
+  replies.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply';
+    btn.textContent = r.label;
+    btn.addEventListener('click', () => handleReply(r.value, r.label));
+    quickRepliesEl.appendChild(btn);
+  });
+}
+
+function botReply(text, quickReplies, delay) {
+  const d = delay || 800;
+  showTyping();
+  setQuickReplies([]);
+  setTimeout(() => {
+    hideTyping();
+    addBotMsg(text);
+    if (quickReplies) setQuickReplies(quickReplies);
+  }, d);
+}
+
+function botReplySpecial(fn, quickReplies, delay) {
+  const d = delay || 800;
+  showTyping();
+  setQuickReplies([]);
+  setTimeout(() => {
+    hideTyping();
+    fn();
+    if (quickReplies) setQuickReplies(quickReplies);
+  }, d);
+}
+
+// Flow handlers
+function handleReply(value, label) {
+  addUserMsg(label);
+
+  switch(state.flow) {
+    case 'start':
+      handleStartFlow(value);
+      break;
+    case 'clinic':
+      handleClinicFlow(value);
+      break;
+    case 'doctor':
+      handleDoctorFlow(value);
+      break;
+    case 'date':
+      handleDateFlow(value);
+      break;
+    case 'time':
+      handleTimeFlow(value);
+      break;
+    case 'check-appointment':
+      handleCheckApptFlow(value);
+      break;
+    case 'faq':
+      handleFaqFlow(value);
+      break;
+    case 'done':
+    case 'services-done':
+      handleDoneFlow(value);
+      break;
+  }
+}
+
+function handleStartFlow(value) {
+  switch(value) {
+    case 'book':
+      state.flow = 'clinic';
+      botReply("Which clinic would you like to book?", [
+        { label: 'SafeSight Eye Surgery', value: 'safesight' },
+        { label: 'LAISA Aesthetics', value: 'laisa' }
+      ], 900);
+      break;
+    case 'check':
+      state.flow = 'check-appointment';
+      showTyping();
+      setQuickReplies([]);
+      setTimeout(() => {
+        hideTyping();
+        addCheckApptMsg();
+        setQuickReplies([
+          { label: 'Reschedule', value: 'reschedule' },
+          { label: 'Cancel', value: 'cancel' },
+          { label: 'Back to Menu', value: 'menu' }
+        ]);
+      }, 1000);
+      break;
+    case 'ask':
+      state.flow = 'faq';
+      botReply("What would you like to know?", [
+        { label: 'Operating Hours', value: 'hours' },
+        { label: 'Medical Aid', value: 'medical-aid' },
+        { label: 'Location', value: 'location' },
+        { label: 'Back to Menu', value: 'menu' }
+      ], 700);
+      break;
+    case 'services':
+      state.flow = 'services-done';
+      showTyping();
+      setQuickReplies([]);
+      setTimeout(() => {
+        hideTyping();
+        addServiceMsg();
+        setQuickReplies([
+          { label: 'Book Appointment', value: 'book' },
+          { label: 'Back to Menu', value: 'menu' }
+        ]);
+      }, 900);
+      break;
+  }
+}
+
+function handleClinicFlow(value) {
+  state.clinic = value === 'safesight' ? 'SafeSight Eye Surgery' : 'LAISA Aesthetics';
+  state.flow = 'doctor';
+
+  let doctors;
+  if (value === 'safesight') {
+    doctors = [
+      { label: 'Dr. Mokoena - Ophthalmology', value: 'dr-mokoena' },
+      { label: 'Dr. Naidoo - Ophthalmology', value: 'dr-naidoo' },
+      { label: 'Any Available', value: 'any' }
+    ];
+  } else {
+    doctors = [
+      { label: 'Dr. Van Wyk - Aesthetics', value: 'dr-vanwyk' },
+      { label: 'Dr. Pillay - Aesthetics', value: 'dr-pillay' },
+      { label: 'Any Available', value: 'any' }
+    ];
+  }
+
+  botReply("Which doctor would you prefer?", doctors, 800);
+}
+
+function handleDoctorFlow(value) {
+  if (value === 'any') {
+    if (state.clinic.includes('SafeSight')) {
+      state.doctor = 'Dr. Mokoena';
+    } else {
+      state.doctor = 'Dr. Van Wyk';
+    }
+    state.doctor += ' (Next Available)';
+  } else if (value === 'dr-mokoena') {
+    state.doctor = 'Dr. Mokoena';
+  } else if (value === 'dr-naidoo') {
+    state.doctor = 'Dr. Naidoo';
+  } else if (value === 'dr-vanwyk') {
+    state.doctor = 'Dr. Van Wyk';
+  } else if (value === 'dr-pillay') {
+    state.doctor = 'Dr. Pillay';
+  }
+  state.flow = 'date';
+
+  botReply("What date works for you?", [
+    { label: 'Tomorrow', value: 'tomorrow' },
+    { label: 'This Week', value: 'this-week' },
+    { label: 'Next Week', value: 'next-week' },
+    { label: 'Choose Date', value: 'choose-date' }
+  ], 800);
+}
+
+function handleDateFlow(value) {
+  const today = new Date();
+
+  switch(value) {
+    case 'tomorrow': {
+      const d = new Date(today);
+      d.setDate(d.getDate() + 1);
+      state.date = formatDate(d);
+      break;
+    }
+    case 'this-week': {
+      // Next Thursday for demo
+      const d = new Date(today);
+      d.setDate(d.getDate() + ((4 - d.getDay() + 7) % 7 || 7));
+      state.date = formatDate(d);
+      break;
+    }
+    case 'next-week': {
+      const d = new Date(today);
+      d.setDate(d.getDate() + 10);
+      state.date = formatDate(d);
+      break;
+    }
+    case 'choose-date': {
+      const d = new Date(today);
+      d.setDate(d.getDate() + 3);
+      state.date = formatDate(d);
+      break;
+    }
+  }
+
+  state.flow = 'time';
+  botReply("Preferred time slot?", [
+    { label: 'Morning 8-12', value: 'morning' },
+    { label: 'Afternoon 12-5', value: 'afternoon' },
+    { label: 'Evening 5-7', value: 'evening' }
+  ], 800);
+}
+
+function handleTimeFlow(value) {
+  switch(value) {
+    case 'morning': state.time = '9:30 AM'; break;
+    case 'afternoon': state.time = '2:30 PM'; break;
+    case 'evening': state.time = '5:30 PM'; break;
+  }
+  state.flow = 'done';
+
+  showTyping();
+  setQuickReplies([]);
+  setTimeout(() => {
+    hideTyping();
+    addApptCardMsg(state.doctor, state.clinic, state.date, state.time);
+    setQuickReplies([
+      { label: 'Book Another', value: 'book' },
+      { label: 'Back to Menu', value: 'menu' }
+    ]);
+  }, 1000);
+}
+
+function handleCheckApptFlow(value) {
+  switch(value) {
+    case 'reschedule':
+      state.flow = 'clinic';
+      state.clinic = 'SafeSight Eye Surgery';
+      state.doctor = 'Dr. Mokoena';
+      botReply("I'll help you reschedule. Which clinic?", [
+        { label: 'SafeSight Eye Surgery', value: 'safesight' },
+        { label: 'LAISA Aesthetics', value: 'laisa' }
+      ], 800);
+      break;
+    case 'cancel':
+      state.flow = 'done';
+      botReply("Your appointment has been cancelled. A confirmation will be sent via SMS. Is there anything else I can help with?", [
+        { label: 'Book New Appointment', value: 'book' },
+        { label: 'Back to Menu', value: 'menu' }
+      ], 800);
+      break;
+    case 'menu':
+      goToMenu();
+      break;
+  }
+}
+
+function handleFaqFlow(value) {
+  switch(value) {
+    case 'hours':
+      botReply("Our operating hours:\n\nSafeSight Eye Surgery: Mon-Fri 8AM-6PM, Sat 8AM-1PM\nLAISA Aesthetics: Mon-Fri 9AM-7PM, Sat 9AM-3PM\n\nBoth clinics are closed on Sundays and public holidays.", [
+        { label: 'Medical Aid', value: 'medical-aid' },
+        { label: 'Location', value: 'location' },
+        { label: 'Back to Menu', value: 'menu' }
+      ], 900);
+      break;
+    case 'medical-aid':
+      botReply("We accept most major medical aids including:\n\n- Discovery Health\n- Bonitas\n- Momentum Health\n- Medihelp\n- GEMS\n- Bankmed\n\nWe also offer payment plans for procedures not covered by medical aid. Contact us for details.", [
+        { label: 'Operating Hours', value: 'hours' },
+        { label: 'Location', value: 'location' },
+        { label: 'Back to Menu', value: 'menu' }
+      ], 900);
+      break;
+    case 'location':
+      botReply("We're conveniently located in Sandton:\n\nSafeSight Eye Surgery:\n140 West Street, Sandton City Medical Centre, 2196\n\nLAISA Aesthetics:\nSandton City Mall, Level 4, Rivonia Rd, 2196\n\nFree parking available. We're also accessible via Gautrain (Sandton Station).", [
+        { label: 'Operating Hours', value: 'hours' },
+        { label: 'Medical Aid', value: 'medical-aid' },
+        { label: 'Back to Menu', value: 'menu' }
+      ], 900);
+      break;
+    case 'menu':
+      goToMenu();
+      break;
+  }
+}
+
+function handleDoneFlow(value) {
+  switch(value) {
+    case 'book':
+      state.clinic = null;
+      state.doctor = null;
+      state.date = null;
+      state.time = null;
+      state.flow = 'clinic';
+      botReply("Which clinic would you like to book?", [
+        { label: 'SafeSight Eye Surgery', value: 'safesight' },
+        { label: 'LAISA Aesthetics', value: 'laisa' }
+      ], 800);
+      break;
+    case 'menu':
+      goToMenu();
+      break;
+  }
+}
+
+function goToMenu() {
+  state.flow = 'start';
+  state.clinic = null;
+  state.doctor = null;
+  state.date = null;
+  state.time = null;
+  botReply("Welcome back! How can we help you today?", [
+    { label: 'Book Appointment', value: 'book' },
+    { label: 'Check Appointment', value: 'check' },
+    { label: 'Ask a Question', value: 'ask' },
+    { label: 'Our Services', value: 'services' }
+  ], 700);
+}
+
+// Initial greeting
+setTimeout(() => {
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addBotMsg("Welcome to SafeSight x LAISA! \u{1F44B} How can we help you today?");
+    setQuickReplies([
+      { label: 'Book Appointment', value: 'book' },
+      { label: 'Check Appointment', value: 'check' },
+      { label: 'Ask a Question', value: 'ask' },
+      { label: 'Our Services', value: 'services' }
+    ]);
+  }, 1200);
+}, 400);
+</script>
+
+</body>
+</html>

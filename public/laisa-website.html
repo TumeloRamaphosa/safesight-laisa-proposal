@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAISA Aesthetics — Your Best Self, Revealed.</title>
+<style>
+/* === RESET & BASE === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, sans-serif; color: #1A1A1A; background: #FFF8F0; line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* === DESIGN TOKENS === */
+:root {
+    --rose: #B76E79;
+    --rose-dark: #9A5560;
+    --rose-light: #D4A0A8;
+    --pink: #F5E6E8;
+    --cream: #FFF8F0;
+    --gold: #C9A84C;
+    --gold-dark: #A88B3A;
+    --charcoal: #1A1A1A;
+    --white: #FFFFFF;
+    --muted: #8A7E7F;
+    --surface: #FAF5F2;
+    --shadow: 0 4px 24px rgba(183, 110, 121, 0.12);
+    --shadow-lg: 0 8px 40px rgba(183, 110, 121, 0.18);
+}
+
+/* === HERO === */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #1A1A1A 0%, #2A1A1E 40%, #3A2530 70%, #4A2A35 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(183, 110, 121, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 50%);
+    animation: shimmer 8s ease-in-out infinite;
+}
+@keyframes shimmer {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-2%, 1%) scale(1.02); }
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+    color: var(--white);
+    padding: 0.4rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+.hero h1 {
+    font-family: Georgia, 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+.hero h1 span {
+    background: linear-gradient(135deg, var(--rose-light), var(--gold), var(--rose-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero p {
+    font-size: 1.2rem;
+    color: var(--rose-light);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    animation: fadeIn 1s ease-out 0.6s both;
+}
+.hero-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--charcoal);
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: fadeIn 1s ease-out 0.8s both;
+}
+.hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3); }
+.hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--rose-light);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* === SECTIONS === */
+.section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+.section-label {
+    display: inline-block;
+    color: var(--rose);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+.section-title {
+    font-family: Georgia, 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 0.75rem;
+    color: var(--charcoal);
+}
+.section-subtitle { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin-bottom: 3rem; }
+
+/* === TREATMENTS GRID === */
+.treatments-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+.treatment-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(183, 110, 121, 0.1);
+}
+.treatment-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.treatment-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--pink), var(--rose-light));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.treatment-card h3 { font-family: Georgia, serif; font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--charcoal); }
+.treatment-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+.treatment-price { color: var(--rose); font-weight: 600; margin-top: 0.75rem; font-size: 0.95rem; }
+
+/* === BEFORE & AFTER === */
+.ba-section { background: var(--charcoal); padding: 5rem 2rem; }
+.ba-section .section-label { color: var(--gold); }
+.ba-section .section-title { color: var(--white); }
+.ba-section .section-subtitle { color: var(--rose-light); }
+.ba-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+.ba-card {
+    background: #2A1A1E;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(183, 110, 121, 0.15);
+}
+.ba-card-header {
+    background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+    padding: 1.25rem 1.5rem;
+    color: var(--white);
+}
+.ba-card-header h3 { font-family: Georgia, serif; font-size: 1.15rem; }
+.ba-card-header span { font-size: 0.85rem; opacity: 0.9; }
+.ba-card-body { padding: 1.5rem; }
+.ba-card-body p { color: var(--rose-light); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; }
+.ba-card-body .results {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+.ba-result { text-align: center; }
+.ba-result .value { font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+.ba-result .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.ba-disclaimer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* === JOURNEY === */
+.journey-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.journey-step {
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+}
+.journey-step::after {
+    content: '→';
+    position: absolute;
+    right: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--rose-light);
+    font-size: 1.5rem;
+}
+.journey-step:last-child::after { display: none; }
+.journey-number {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 auto 1rem;
+}
+.journey-step h3 { font-family: Georgia, serif; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.journey-step p { color: var(--muted); font-size: 0.9rem; }
+
+/* === TEAM === */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.team-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgba(183, 110, 121, 0.1);
+    transition: transform 0.3s;
+}
+.team-card:hover { transform: translateY(-4px); }
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--pink), var(--rose-light));
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 1.5rem;
+    color: var(--rose-dark);
+    font-weight: 600;
+}
+.team-card h3 { font-family: Georgia, serif; font-size: 1.2rem; margin-bottom: 0.25rem; }
+.team-card .role { color: var(--rose); font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.team-card p { color: var(--muted); font-size: 0.9rem; }
+
+/* === TESTIMONIALS === */
+.testimonials { background: var(--surface); padding: 5rem 2rem; }
+.testimonials .section-title { text-align: center; }
+.testimonials .section-subtitle { text-align: center; margin-left: auto; margin-right: auto; }
+.testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+.testimonial-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(183, 110, 121, 0.1);
+}
+.testimonial-quote {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--charcoal);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    position: relative;
+    padding-left: 1rem;
+}
+.testimonial-quote::before {
+    content: '"';
+    position: absolute;
+    left: -0.25rem;
+    top: -0.25rem;
+    font-size: 3rem;
+    color: var(--rose-light);
+    font-family: Georgia, serif;
+}
+.testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+.testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--rose-dark);
+}
+.testimonial-name { font-weight: 600; font-size: 0.95rem; }
+.testimonial-detail { color: var(--muted); font-size: 0.8rem; }
+
+/* === PRODUCTS === */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+.product-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(183, 110, 121, 0.1);
+    transition: transform 0.3s;
+}
+.product-card:hover { transform: translateY(-4px); }
+.product-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.product-card h3 { font-family: Georgia, serif; font-size: 1.1rem; margin-bottom: 0.25rem; }
+.product-card .product-desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.75rem; }
+.product-price { color: var(--gold); font-weight: 700; font-size: 1.25rem; }
+.product-price span { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+
+/* === SEASONAL OFFERS === */
+.offers-section { background: linear-gradient(135deg, #2A1A1E, #3A2530); padding: 5rem 2rem; }
+.offers-section .section-label { color: var(--gold); }
+.offers-section .section-title { color: var(--white); }
+.offers-section .section-subtitle { color: var(--rose-light); }
+.offers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+.offer-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(183, 110, 121, 0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+}
+.offer-card h3 { font-family: Georgia, serif; font-size: 1.5rem; color: var(--white); margin-bottom: 0.5rem; }
+.offer-card .offer-price { font-size: 2rem; color: var(--gold); font-weight: 700; margin-bottom: 0.25rem; }
+.offer-card .offer-save { color: var(--rose-light); font-size: 0.95rem; margin-bottom: 1rem; }
+.offer-card p { color: var(--rose-light); font-size: 0.9rem; }
+.offer-card ul { list-style: none; margin: 1rem 0; }
+.offer-card li { color: var(--rose-light); font-size: 0.9rem; padding: 0.3rem 0; }
+.offer-card li::before { content: '✓ '; color: var(--gold); }
+
+/* === CTA === */
+.cta-section {
+    background: linear-gradient(135deg, var(--charcoal), #2A1A1E);
+    padding: 5rem 2rem;
+    text-align: center;
+}
+.cta-section h2 {
+    font-family: Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--white);
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+.cta-section h2 span {
+    background: linear-gradient(135deg, var(--rose-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.cta-section p { color: var(--rose-light); font-size: 1.1rem; margin-bottom: 2rem; }
+.cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.cta-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.cta-btn:hover { transform: translateY(-2px); }
+.cta-primary { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--charcoal); }
+.cta-secondary { background: transparent; border: 2px solid var(--rose); color: var(--rose-light); }
+.cta-secondary:hover { background: rgba(183, 110, 121, 0.15); }
+
+/* === FOOTER === */
+footer {
+    background: #111111;
+    color: var(--muted);
+    padding: 3rem 2rem 2rem;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.footer-brand h3 {
+    font-family: Georgia, serif;
+    font-size: 1.5rem;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+}
+.footer-brand h3 span {
+    background: linear-gradient(135deg, var(--rose-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.footer-brand p { font-size: 0.85rem; line-height: 1.7; }
+.footer-col h4 { color: var(--rose-light); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; }
+.footer-col a { display: block; color: var(--muted); font-size: 0.9rem; padding: 0.25rem 0; transition: color 0.3s; }
+.footer-col a:hover { color: var(--rose-light); }
+.footer-bottom {
+    max-width: 1200px;
+    margin: 2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(183, 110, 121, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8rem;
+}
+.footer-powered { color: var(--muted); font-size: 0.75rem; }
+.footer-powered span { color: var(--gold); }
+
+/* === FLOATING BUTTONS === */
+.float-whatsapp {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    z-index: 1000;
+    transition: transform 0.3s;
+    font-size: 1.5rem;
+    color: white;
+}
+.float-whatsapp:hover { transform: scale(1.1); }
+.float-instagram {
+    position: fixed;
+    bottom: 92px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(131, 58, 180, 0.3);
+    z-index: 1000;
+    transition: transform 0.3s;
+    font-size: 1.2rem;
+    color: white;
+}
+.float-instagram:hover { transform: scale(1.1); }
+
+/* === ANIMATIONS === */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .journey-grid { grid-template-columns: repeat(2, 1fr); }
+    .journey-step::after { display: none; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+}
+@media (max-width: 480px) {
+    .journey-grid { grid-template-columns: 1fr; }
+    .section { padding: 3rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <div class="hero-badge">Medical Aesthetics</div>
+        <h1>Your Best Self, <span>Revealed.</span></h1>
+        <p>World-class aesthetic treatments in a warm, welcoming environment. From subtle refinements to transformative results — your journey starts here.</p>
+        <a href="#book" class="hero-cta">Book Your Consultation</a>
+    </div>
+    <div class="hero-scroll">SCROLL TO EXPLORE ↓</div>
+</section>
+
+<!-- Treatments -->
+<section class="section" id="treatments">
+    <div class="section-label">Our Treatments</div>
+    <h2 class="section-title">Expert Care for Every Concern</h2>
+    <p class="section-subtitle">Medical-grade treatments delivered by specialist doctors and aesthetic nurses, using the latest technology and techniques.</p>
+    <div class="treatments-grid">
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">💉</div>
+            <h3>Botox & Fillers</h3>
+            <p>Anti-wrinkle injections and dermal fillers for natural-looking facial rejuvenation. Reduce lines, restore volume, define contours.</p>
+            <div class="treatment-price">From R1,800 per session</div>
+        </div>
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">✨</div>
+            <h3>Laser Treatments</h3>
+            <p>Advanced laser therapy for skin resurfacing, pigmentation, acne scars, and hair removal. Minimal downtime, maximum results.</p>
+            <div class="treatment-price">From R2,200 per session</div>
+        </div>
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">🌿</div>
+            <h3>Skin Rejuvenation</h3>
+            <p>Chemical peels, microneedling, PRP therapy, and medical-grade facials. Reveal smoother, brighter, younger-looking skin.</p>
+            <div class="treatment-price">From R1,200 per session</div>
+        </div>
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">💪</div>
+            <h3>Body Contouring</h3>
+            <p>Non-surgical body sculpting with CoolTech fat freezing, radiofrequency skin tightening, and cellulite reduction treatments.</p>
+            <div class="treatment-price">From R3,500 per session</div>
+        </div>
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">🧪</div>
+            <h3>Chemical Peels</h3>
+            <p>Medical-grade peels ranging from light refresh to deep resurfacing. Tailored to your skin type and goals by our specialists.</p>
+            <div class="treatment-price">From R900 per session</div>
+        </div>
+        <div class="treatment-card fade-in">
+            <div class="treatment-icon">🛍️</div>
+            <h3>Product Range</h3>
+            <p>LAISA-branded skincare products designed to extend and maintain your treatment results at home. Retinol, SPF, serums, and more.</p>
+            <div class="treatment-price">From R320</div>
+        </div>
+    </div>
+</section>
+
+<!-- Before & After -->
+<section class="ba-section" id="results">
+    <div style="max-width:1200px;margin:0 auto;">
+        <div class="section-label">Real Results</div>
+        <h2 class="section-title">Transformations That Speak for Themselves</h2>
+        <p class="section-subtitle">Every face tells a story. Here are some of the stories we've helped write.</p>
+        <div class="ba-grid">
+            <div class="ba-card fade-in">
+                <div class="ba-card-header">
+                    <h3>Nomsa Dlamini</h3>
+                    <span>Botox & Dermal Fillers · 3 sessions over 6 months</span>
+                </div>
+                <div class="ba-card-body">
+                    <p>Nomsa came to us wanting to soften forehead lines and restore cheek volume. After a personalised treatment plan, she looks refreshed and natural — never overdone.</p>
+                    <div class="results">
+                        <div class="ba-result"><div class="value">94%</div><div class="label">Satisfaction</div></div>
+                        <div class="ba-result"><div class="value">6mo</div><div class="label">Duration</div></div>
+                        <div class="ba-result"><div class="value">3</div><div class="label">Sessions</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ba-card fade-in">
+                <div class="ba-card-header">
+                    <h3>Palesa Mokoena</h3>
+                    <span>Laser Resurfacing · 4 sessions over 8 months</span>
+                </div>
+                <div class="ba-card-body">
+                    <p>Years of acne scarring had affected Palesa's confidence. Our fractional laser treatment plan dramatically improved skin texture and tone.</p>
+                    <div class="results">
+                        <div class="ba-result"><div class="value">88%</div><div class="label">Improvement</div></div>
+                        <div class="ba-result"><div class="value">8mo</div><div class="label">Duration</div></div>
+                        <div class="ba-result"><div class="value">4</div><div class="label">Sessions</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="ba-card fade-in">
+                <div class="ba-card-header">
+                    <h3>Rethabile Sithole</h3>
+                    <span>PRP Therapy & Microneedling · 5 sessions</span>
+                </div>
+                <div class="ba-card-body">
+                    <p>Rethabile's wedding was 6 months away. PRP therapy combined with microneedling gave her a bridal glow that lasted well beyond the big day.</p>
+                    <div class="results">
+                        <div class="ba-result"><div class="value">97%</div><div class="label">Satisfaction</div></div>
+                        <div class="ba-result"><div class="value">5mo</div><div class="label">Duration</div></div>
+                        <div class="ba-result"><div class="value">5</div><div class="label">Sessions</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="ba-disclaimer">Individual results may vary. All treatments are performed by qualified medical professionals. Consultation required before any procedure.</p>
+    </div>
+</section>
+
+<!-- Journey -->
+<section class="section" id="journey">
+    <div class="section-label">Your Journey</div>
+    <h2 class="section-title">Four Steps to Your Best Self</h2>
+    <p class="section-subtitle">From first consultation to ongoing care, we're with you every step.</p>
+    <div class="journey-grid">
+        <div class="journey-step fade-in">
+            <div class="journey-number">1</div>
+            <h3>Consultation</h3>
+            <p>30-minute personalised assessment with our aesthetic specialists. We listen, understand your goals, and create a plan just for you.</p>
+        </div>
+        <div class="journey-step fade-in">
+            <div class="journey-number">2</div>
+            <h3>Personalised Plan</h3>
+            <p>A bespoke treatment roadmap designed for your face, your skin, your timeline. No cookie-cutter approaches here.</p>
+        </div>
+        <div class="journey-step fade-in">
+            <div class="journey-number">3</div>
+            <h3>Treatment</h3>
+            <p>Expert procedures in our state-of-the-art clinic. Medical-grade products, advanced technology, and a team that prioritises your comfort.</p>
+        </div>
+        <div class="journey-step fade-in">
+            <div class="journey-number">4</div>
+            <h3>Ongoing Care</h3>
+            <p>Follow-up appointments, product recommendations, and seasonal touch-ups. Your results are our reputation.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Team -->
+<section class="section" id="team">
+    <div class="section-label">Our Specialists</div>
+    <h2 class="section-title">Expert Hands, Warm Hearts</h2>
+    <p class="section-subtitle">Every LAISA treatment is performed by qualified medical professionals who combine clinical expertise with an artist's eye.</p>
+    <div class="team-grid">
+        <div class="team-card fade-in">
+            <div class="team-avatar">DP</div>
+            <h3>Dr. Anusha Pillay</h3>
+            <div class="role">Aesthetic Medicine</div>
+            <p>MBChB, Diploma in Aesthetic Medicine (UCL). 12 years specialising in non-surgical facial rejuvenation. Certified in advanced dermal fillers and neurotoxin techniques.</p>
+        </div>
+        <div class="team-card fade-in">
+            <div class="team-avatar">DG</div>
+            <h3>Dr. Priya Govender</h3>
+            <div class="role">Dermatology</div>
+            <p>MMed Derm (Wits), Fellow of the College of Dermatologists. Specialist in laser treatments, skin of colour, and medical dermatology with an aesthetic focus.</p>
+        </div>
+        <div class="team-card fade-in">
+            <div class="team-avatar">SN</div>
+            <h3>Sr. Thandi Nkosi</h3>
+            <div class="role">Aesthetic Nurse</div>
+            <p>BN, Aesthetic Nursing Certificate (AAAM). 8 years in medical aesthetics. Specialist in patient care, treatment preparation, and post-procedure recovery support.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials" id="reviews">
+    <div class="section-label">Patient Stories</div>
+    <h2 class="section-title">Hear From Our Patients</h2>
+    <p class="section-subtitle">Real stories from real people who chose LAISA for their aesthetic journey.</p>
+    <div class="testimonial-grid">
+        <div class="testimonial-card fade-in">
+            <div class="testimonial-quote">I was so nervous about getting fillers for the first time. Dr. Pillay made me feel completely at ease. The results are natural — people say I look rested, not done.</div>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">LM</div>
+                <div>
+                    <div class="testimonial-name">Lerato Mkhize</div>
+                    <div class="testimonial-detail">Dermal Fillers · 6 months ago</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card fade-in">
+            <div class="testimonial-quote">The laser treatment for my acne scars changed my life. I spent years hiding behind foundation. Now I leave the house with just SPF. Best investment I ever made.</div>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">NM</div>
+                <div>
+                    <div class="testimonial-name">Nthabiseng Mahlangu</div>
+                    <div class="testimonial-detail">Laser Resurfacing · 8 months ago</div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-card fade-in">
+            <div class="testimonial-quote">I came for Botox and left with a complete skincare routine. The team really cares about long-term results, not just quick fixes. My skin has never looked better.</div>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">KT</div>
+                <div>
+                    <div class="testimonial-name">Kgabo Tau</div>
+                    <div class="testimonial-detail">Botox + Skincare · 4 months ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="products">
+    <div class="section-label">Skincare</div>
+    <h2 class="section-title">Extend Your Results at Home</h2>
+    <p class="section-subtitle">LAISA-branded skincare, formulated by our specialists to maintain and enhance your in-clinic results.</p>
+    <div class="products-grid">
+        <div class="product-card fade-in">
+            <div class="product-emoji">💧</div>
+            <h3>Retinol Serum</h3>
+            <p class="product-desc">0.5% encapsulated retinol for overnight renewal. Reduces fine lines and improves texture.</p>
+            <div class="product-price">R680 <span>/ 30ml</span></div>
+        </div>
+        <div class="product-card fade-in">
+            <div class="product-emoji">☀️</div>
+            <h3>UV Shield SPF50+</h3>
+            <p class="product-desc">Lightweight broad-spectrum protection. No white cast, suitable for all skin tones.</p>
+            <div class="product-price">R320 <span>/ 50ml</span></div>
+        </div>
+        <div class="product-card fade-in">
+            <div class="product-emoji">👁️</div>
+            <h3>Hydrating Eye Cream</h3>
+            <p class="product-desc">Peptide-rich formula targeting fine lines, dark circles, and puffiness around the eyes.</p>
+            <div class="product-price">R450 <span>/ 15ml</span></div>
+        </div>
+        <div class="product-card fade-in">
+            <div class="product-emoji">🍊</div>
+            <h3>Vitamin C Brightening</h3>
+            <p class="product-desc">15% L-ascorbic acid serum for radiant, even-toned skin. Antioxidant protection.</p>
+            <div class="product-price">R520 <span>/ 30ml</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Seasonal Offers -->
+<section class="offers-section" id="offers">
+    <div class="section-label">Seasonal Packages</div>
+    <h2 class="section-title">Limited-Time Offers</h2>
+    <p class="section-subtitle">Curated treatment packages designed for the season.</p>
+    <div class="offers-grid">
+        <div class="offer-card fade-in">
+            <h3>Winter Glow Package</h3>
+            <div class="offer-price">R2,400</div>
+            <div class="offer-save">Save R600</div>
+            <p>Everything your skin needs this winter:</p>
+            <ul>
+                <li>1x Chemical Peel (medium depth)</li>
+                <li>1x Hydrating Facial</li>
+                <li>1x LED Light Therapy Session</li>
+                <li>LAISA Hydrating Eye Cream (15ml)</li>
+            </ul>
+        </div>
+        <div class="offer-card fade-in">
+            <h3>Bridal Prep Package</h3>
+            <div class="offer-price">R3,800</div>
+            <div class="offer-save">Save R900</div>
+            <p>Your complete pre-wedding glow:</p>
+            <ul>
+                <li>2x Skin Consultations</li>
+                <li>1x Laser Resurfacing Session</li>
+                <li>1x Botox (1 area)</li>
+                <li>1x PRP Facial</li>
+                <li>LAISA Vitamin C Brightening (30ml)</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="book">
+    <h2>Ready to Begin <span>Your Transformation?</span></h2>
+    <p>Book a consultation today. R850, fully redeemable against any treatment on the day.</p>
+    <div class="cta-buttons">
+        <a href="#" class="cta-btn cta-primary">Book on WhatsApp</a>
+        <a href="#" class="cta-btn cta-secondary">View on Instagram</a>
+        <a href="#" class="cta-btn cta-secondary">Book Online</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h3><span>LAISA</span></h3>
+            <p>Medical Aesthetics. Your best self, revealed. Located in Sandton, Johannesburg. HPCSA registered practice.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Treatments</h4>
+            <a href="#treatments">Botox & Fillers</a>
+            <a href="#treatments">Laser Treatments</a>
+            <a href="#treatments">Skin Rejuvenation</a>
+            <a href="#treatments">Body Contouring</a>
+            <a href="#treatments">Chemical Peels</a>
+        </div>
+        <div class="footer-col">
+            <h4>Practice</h4>
+            <a href="#team">Our Specialists</a>
+            <a href="#results">Results</a>
+            <a href="#products">Skincare</a>
+            <a href="#offers">Packages</a>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <a href="tel:+27110001234">+27 11 000 1234</a>
+            <a href="mailto:hello@laisa.co.za">hello@laisa.co.za</a>
+            <p>Sandton, Johannesburg<br>Mon–Fri: 8:00–18:00<br>Sat: 9:00–14:00</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>© 2026 LAISA Aesthetics. All rights reserved.</div>
+        <div>
+            <div class="footer-powered">Powered by <span>Valley OS</span></div>
+            <div style="margin-top:0.25rem;">POPIA compliant · HPCSA registered · Products not evaluated by SAHPRA</div>
+        </div>
+    </div>
+</footer>
+
+<!-- Floating Buttons -->
+<a href="#" class="float-whatsapp" title="Chat on WhatsApp">💬</a>
+<a href="#" class="float-instagram" title="Follow on Instagram">📷</a>
+
+<!-- Scroll Animations -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

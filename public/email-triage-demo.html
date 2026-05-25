@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeSight x LAISA | AI Email Triage</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #C9A84C;
+            --bg: #0A0A0A;
+            --surface: #111111;
+            --card: #1A1A1A;
+            --text: #F5F0E8;
+            --muted: #8A8578;
+            --success: #4CAF50;
+            --warning: #FFA726;
+            --error: #EF5350;
+            --border: #2A2A2A;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* === DEMO BANNER === */
+        .demo-banner {
+            background: linear-gradient(90deg, var(--gold), #D4B65C, var(--gold));
+            color: #0A0A0A;
+            text-align: center;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 0.5s 0.2s forwards;
+        }
+
+        /* === TOP BAR === */
+        .top-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            animation: fadeIn 0.5s 0.4s forwards;
+        }
+
+        .top-bar-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .top-bar-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), #D4B65C);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #0A0A0A;
+        }
+
+        .top-bar-title {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .top-bar-title span {
+            color: var(--gold);
+        }
+
+        .top-bar-subtitle {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-top: 1px;
+        }
+
+        .top-bar-stats {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .stat-value.gold { color: var(--gold); }
+        .stat-value.green { color: var(--success); }
+        .stat-value.amber { color: var(--warning); }
+        .stat-value.red { color: var(--error); }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border);
+        }
+
+        /* === MAIN LAYOUT === */
+        .main-layout {
+            display: flex;
+            height: calc(100vh - 97px);
+            overflow: hidden;
+        }
+
+        /* === LEFT PANEL (INBOX) === */
+        .inbox-panel {
+            width: 35%;
+            min-width: 340px;
+            max-width: 480px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .inbox-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .inbox-header-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--muted);
+        }
+
+        .inbox-header-count {
+            font-size: 12px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .inbox-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .inbox-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .inbox-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .email-item {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s, border-left 0.2s;
+            border-left: 3px solid transparent;
+            opacity: 0;
+            animation: slideInLeft 0.4s forwards;
+        }
+
+        .email-item:hover {
+            background: rgba(201, 168, 76, 0.04);
+        }
+
+        .email-item.active {
+            background: rgba(201, 168, 76, 0.08);
+            border-left-color: var(--gold);
+        }
+
+        .email-item.active .email-sender {
+            color: var(--gold);
+        }
+
+        .email-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .email-sender {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            transition: color 0.2s;
+        }
+
+        .email-time {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .email-subject {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email-preview {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 8px;
+        }
+
+        .email-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .badge-auto {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(76, 175, 80, 0.25);
+        }
+
+        .badge-escalated {
+            background: rgba(255, 167, 38, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(255, 167, 38, 0.25);
+        }
+
+        .badge-urgent {
+            background: rgba(239, 83, 80, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(239, 83, 80, 0.25);
+            animation: urgentPulse 2s infinite;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-auto .badge-dot { background: var(--success); }
+        .badge-escalated .badge-dot { background: var(--warning); }
+        .badge-urgent .badge-dot { background: var(--error); }
+
+        /* Urgent email row highlight */
+        .email-item.urgent-row {
+            background: rgba(239, 83, 80, 0.05);
+            border-left-color: var(--error);
+        }
+
+        .email-item.urgent-row:hover {
+            background: rgba(239, 83, 80, 0.1);
+        }
+
+        /* === RIGHT PANEL (DETAIL) === */
+        .detail-panel {
+            flex: 1;
+            background: var(--bg);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .detail-panel::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .detail-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            gap: 12px;
+        }
+
+        .detail-empty-icon {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .detail-empty-text {
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-content {
+            opacity: 0;
+            animation: fadeIn 0.35s forwards;
+        }
+
+        /* Detail header */
+        .detail-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .detail-subject {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .detail-meta-item {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .detail-meta-item strong {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .detail-classification {
+            margin-left: auto;
+        }
+
+        /* Detail body sections */
+        .detail-sections {
+            padding: 28px 32px;
+        }
+
+        .detail-section {
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeSlideUp 0.4s forwards;
+        }
+
+        .detail-section:nth-child(1) { animation-delay: 0.1s; }
+        .detail-section:nth-child(2) { animation-delay: 0.2s; }
+        .detail-section:nth-child(3) { animation-delay: 0.3s; }
+
+        .section-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .section-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+        }
+
+        /* Email body card */
+        .email-body-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        /* AI Analysis card */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .analysis-item {
+            background: rgba(201, 168, 76, 0.04);
+            border: 1px solid rgba(201, 168, 76, 0.1);
+            border-radius: 8px;
+            padding: 14px 18px;
+        }
+
+        .analysis-item-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .analysis-item-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .analysis-item-value.gold { color: var(--gold); }
+        .analysis-item-value.green { color: var(--success); }
+        .analysis-item-value.amber { color: var(--warning); }
+        .analysis-item-value.red { color: var(--error); }
+
+        .confidence-bar {
+            margin-top: 8px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+
+        .confidence-fill.high { background: var(--success); }
+        .confidence-fill.medium { background: var(--warning); }
+
+        /* AI Response card */
+        .ai-response-card {
+            border-left: 3px solid var(--gold);
+        }
+
+        .ai-response-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .ai-response-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #D4B65C);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #0A0A0A;
+            font-weight: 700;
+        }
+
+        .ai-response-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .ai-response-status {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-sent {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(255, 167, 38, 0.15);
+            color: var(--warning);
+        }
+
+        .status-triggered {
+            background: rgba(239, 83, 80, 0.15);
+            color: var(--error);
+        }
+
+        .ai-response-body {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+            white-space: pre-wrap;
+        }
+
+        /* Urgent callout */
+        .urgent-callout {
+            background: rgba(239, 83, 80, 0.08);
+            border: 1px solid rgba(239, 83, 80, 0.25);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .urgent-callout-icon {
+            font-size: 22px;
+            color: var(--error);
+        }
+
+        .urgent-callout-text {
+            font-size: 13px;
+            color: var(--error);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .urgent-callout-sub {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .inbox-panel {
+                width: 100%;
+                max-width: none;
+                height: 45%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .top-bar-stats {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">Demo Mode &mdash; SafeSight &times; LAISA AI Email Triage System &mdash; Simulated Data for Presentation Purposes</div>
+
+<!-- Top Bar -->
+<div class="top-bar">
+    <div class="top-bar-brand">
+        <div class="top-bar-logo">SL</div>
+        <div>
+            <div class="top-bar-title">SafeSight <span>&times;</span> LAISA</div>
+            <div class="top-bar-subtitle">AI Email Triage Dashboard</div>
+        </div>
+    </div>
+    <div class="top-bar-stats">
+        <div class="stat-item">
+            <div class="stat-value gold">47</div>
+            <div class="stat-label">Emails Today</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-value green">38</div>
+            <div class="stat-label">Auto-Handled</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-value amber">7</div>
+            <div class="stat-label">Escalated</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-value red">2</div>
+            <div class="stat-label">Urgent</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-value gold">81%</div>
+            <div class="stat-label">Automation Rate</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+
+    <!-- Left Panel: Inbox -->
+    <div class="inbox-panel">
+        <div class="inbox-header">
+            <div class="inbox-header-title">Inbox</div>
+            <div class="inbox-header-count">8 triaged</div>
+        </div>
+        <div class="inbox-list" id="inboxList">
+            <!-- Emails injected by JS -->
+        </div>
+    </div>
+
+    <!-- Right Panel: Detail -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-empty" id="detailEmpty">
+            <div class="detail-empty-icon">&#9993;</div>
+            <div class="detail-empty-text">Select an email to view AI triage details</div>
+        </div>
+        <div class="detail-content" id="detailContent" style="display:none;"></div>
+    </div>
+
+</div>
+
+<script>
+const emails = [
+    {
+        id: 1,
+        sender: "Thandiwe Nkosi",
+        subject: "Appointment confirmation needed",
+        preview: "Hi, I'd like to confirm my appointment for Thursday morning...",
+        time: "09:12",
+        badge: "auto",
+        badgeText: "Auto-Confirmed",
+        category: "Booking",
+        confidence: 97,
+        confidenceLevel: "high",
+        action: "Appointment auto-confirmed via calendar integration",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Hi there,\n\nI'd like to confirm my appointment with Dr. Mokoena for Thursday morning. I was told 10:00 AM but didn't receive a confirmation message.\n\nCould you please confirm the time and let me know if I need to bring anything? This will be my first visit.\n\nThank you,\nThandiwe Nkosi",
+        aiResponse: "Dear Thandiwe,\n\nYour appointment with Dr. Mokoena is confirmed for Thursday at 10:00 AM at our Sandton clinic.\n\nPlease arrive 15 minutes early for registration. Bring your ID and medical aid card. If you need to reschedule, kindly let us know 24 hours in advance.\n\nWe look forward to seeing you.\n\nWarm regards,\nSafeSight x LAISA",
+        urgent: false
+    },
+    {
+        id: 2,
+        sender: "Marcus Steyn",
+        subject: "Post-op follow up",
+        preview: "It's been two weeks since my LASIK surgery and I'm experiencing...",
+        time: "09:34",
+        badge: "escalated",
+        badgeText: "Escalated to Doctor",
+        category: "Follow-up",
+        confidence: 89,
+        confidenceLevel: "high",
+        action: "Escalated to Dr. Naidoo for clinical review",
+        aiStatus: "pending",
+        aiStatusLabel: "Awaiting Doctor Review",
+        body: "Good day,\n\nIt's been two weeks since my LASIK surgery with Dr. Naidoo. My vision has improved significantly, but I'm noticing some dryness in the evenings and occasional halos around lights.\n\nIs this normal at this stage? Should I come in for a check-up or wait until my scheduled 1-month follow-up?\n\nAlso, when can I safely resume swimming?\n\nKind regards,\nMarcus Steyn",
+        aiResponse: "Dear Marcus,\n\nThank you for your update. We're glad to hear your vision has improved.\n\nMild dryness and halos can be normal during the recovery period, but Dr. Naidoo would like to review your progress personally. We'll have Dr. Naidoo call you today to discuss your symptoms and advise on activity restrictions.\n\nPlease keep using the prescribed eye drops as directed.\n\nBest regards,\nSafeSight x LAISA",
+        urgent: false
+    },
+    {
+        id: 3,
+        sender: "Lerato Moloi",
+        subject: "Do you accept Discovery Health?",
+        preview: "Hi, I wanted to find out if your clinic accepts Discovery Health...",
+        time: "09:47",
+        badge: "auto",
+        badgeText: "Auto-Responded",
+        category: "FAQ",
+        confidence: 99,
+        confidenceLevel: "high",
+        action: "Auto-responded from FAQ knowledge base",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Hello,\n\nI wanted to find out if your clinic accepts Discovery Health medical aid. I'm on the Discovery Health Coastal Core plan.\n\nAlso, do I need a referral from my GP to see one of your specialists, or can I book directly?\n\nThanks,\nLerato Moloi",
+        aiResponse: "Dear Lerato,\n\nYes, we accept Discovery Health across all plans including Coastal Core. We process claims directly, so you'll only need to cover any applicable co-payment.\n\nNo GP referral is required for routine consultations. You can book directly with us online or by phone.\n\nFor specialist procedures, Discovery may require pre-authorisation, which we handle on your behalf.\n\nKind regards,\nSafeSight x LAISA",
+        urgent: false
+    },
+    {
+        id: 4,
+        sender: "Johan van der Merwe",
+        subject: "Billing query - invoice #2847",
+        preview: "I was billed for a consultation on April 28th but my medical aid...",
+        time: "10:15",
+        badge: "auto",
+        badgeText: "Auto-Routed to CashClaw",
+        category: "Billing",
+        confidence: 94,
+        confidenceLevel: "high",
+        action: "Invoice reviewed and auto-routed to CashClaw billing system",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Good morning,\n\nI was billed R2,450 for my consultation on April 28th, but my medical aid (Bonitas) should have covered this. The invoice number is #2847.\n\nI've attached my medical aid statement showing the claim was processed. Can you please look into this and adjust the balance?\n\nRegards,\nJohan van der Merwe",
+        aiResponse: "Dear Johan,\n\nThank you for your query regarding invoice #2847.\n\nYour invoice has been reviewed against your Bonitas medical aid statement. A discrepancy was identified in the tariff code submitted. We have re-submitted the claim with the correct code.\n\nUpdated balance: R0.00 \u2014 the full amount is now covered by Bonitas.\n\nYou should receive a revised invoice within 24 hours. Apologies for the inconvenience.\n\nRegards,\nSafeSight x LAISA Billing",
+        urgent: false
+    },
+    {
+        id: 5,
+        sender: "Priya Naidoo",
+        subject: "Botox consultation",
+        preview: "I'm interested in booking a Botox consultation. Could you tell me...",
+        time: "10:38",
+        badge: "auto",
+        badgeText: "Booking Flow Initiated",
+        category: "New Enquiry",
+        confidence: 96,
+        confidenceLevel: "high",
+        action: "New patient booking flow initiated automatically",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Hi,\n\nI'm interested in booking a Botox consultation at your clinic. Could you tell me more about the process and pricing?\n\nI've never had aesthetic treatments before, so I'd appreciate a thorough consultation first. What are your available slots this week?\n\nThank you,\nPriya Naidoo",
+        aiResponse: "Dear Priya,\n\nWe'd love to welcome you for a Botox consultation! Here's what to expect:\n\nYour first visit includes a comprehensive consultation with one of our aesthetic specialists (30 min), where we discuss your goals, assess your needs, and create a personalised treatment plan.\n\nAvailable slots this week:\n\u2022 Tuesday 2:00 PM \u2014 Dr. Pillay\n\u2022 Wednesday 11:30 AM \u2014 Dr. Pillay\n\u2022 Thursday 4:00 PM \u2014 Dr. Govender\n\u2022 Friday 9:00 AM \u2014 Dr. Pillay\n\nConsultation fee: R850 (redeemable against treatment on the day).\n\nShall I book one of these for you?\n\nWarm regards,\nSafeSight x LAISA Aesthetics",
+        urgent: false
+    },
+    {
+        id: 6,
+        sender: "David Molefe",
+        subject: "URGENT: Eye pain after surgery",
+        preview: "I'm experiencing severe pain in my right eye since this morning...",
+        time: "10:52",
+        badge: "urgent",
+        badgeText: "URGENT \u2014 Doctor Escalated",
+        category: "Urgent Clinical",
+        confidence: 98,
+        confidenceLevel: "high",
+        action: "Immediately escalated to on-call doctor. Emergency phone call triggered.",
+        aiStatus: "triggered",
+        aiStatusLabel: "Emergency Call Triggered",
+        body: "URGENT\n\nI had cataract surgery with Dr. Mokoena 5 days ago. Since this morning I'm experiencing severe pain in my right eye, it's very red and sensitive to light. My vision in that eye is also getting worse, not better.\n\nI tried the emergency line but couldn't get through. Please help \u2014 I'm quite worried.\n\nDavid Molefe\nPatient ID: SF-2026-4891\nPhone: 082 555 0147",
+        aiResponse: "Dear David,\n\nYour message has been flagged as urgent. Dr. Mokoena has been notified immediately and will call you within the next 10 minutes at 082 555 0147.\n\nIn the meantime:\n\u2022 Do NOT rub or touch your eye\n\u2022 Keep your prescribed drops refrigerated and continue using them\n\u2022 Stay in a dimly lit room to reduce light sensitivity\n\u2022 If pain becomes unbearable before the doctor calls, go to your nearest emergency room\n\nWe are treating this as a priority.\n\nSafeSight x LAISA Emergency Response",
+        urgent: true
+    },
+    {
+        id: 7,
+        sender: "Sarah Botha",
+        subject: "Skincare products reorder",
+        preview: "I'd like to reorder the same skincare products I bought last time...",
+        time: "11:20",
+        badge: "auto",
+        badgeText: "Auto-Fulfilled",
+        category: "Product Sales",
+        confidence: 95,
+        confidenceLevel: "high",
+        action: "Order auto-fulfilled from inventory system",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Hi,\n\nI'd like to reorder the same skincare products I bought during my last visit:\n\n1. LAISA Retinol Serum (30ml)\n2. SafeSight UV Shield SPF50+\n3. Hydrating Eye Cream (15ml)\n\nCan you confirm availability and let me know when I can collect?\n\nThanks,\nSarah Botha",
+        aiResponse: "Dear Sarah,\n\nGreat news \u2014 all your preferred products are in stock!\n\nOrder confirmed:\n1. LAISA Retinol Serum (30ml) \u2014 R680\n2. SafeSight UV Shield SPF50+ \u2014 R320\n3. Hydrating Eye Cream (15ml) \u2014 R450\n\nTotal: R1,450\n\nYour order will be ready for collection at our Sandton reception within 2 hours. Alternatively, we can arrange courier delivery (R75, 1\u20132 business days).\n\nShall I arrange delivery?\n\nBest,\nSafeSight x LAISA Products",
+        urgent: false
+    },
+    {
+        id: 8,
+        sender: "Amahle Dlamini",
+        subject: "Thank you for the amazing service!",
+        preview: "I just wanted to say a huge thank you to Dr. Mokoena and the team...",
+        time: "11:45",
+        badge: "auto",
+        badgeText: "Saved for Marketing",
+        category: "Testimonial",
+        confidence: 92,
+        confidenceLevel: "high",
+        action: "Testimonial saved to marketing database. Consent request sent.",
+        aiStatus: "sent",
+        aiStatusLabel: "Response Sent",
+        body: "Good day,\n\nI just wanted to say a huge thank you to Dr. Mokoena and the entire SafeSight team. My LASIK surgery was life-changing and the care I received from start to finish was exceptional.\n\nThe follow-up calls and attention to detail made me feel truly valued as a patient. I've already recommended you to three friends!\n\nKeep up the amazing work.\n\nWarmly,\nAmahle Dlamini",
+        aiResponse: "Dear Amahle,\n\nThank you so much for your kind words \u2014 this truly means the world to our team. We'll be sure to share your feedback with Dr. Mokoena and the rest of the staff.\n\nWith your permission, we'd love to feature your testimonial (anonymously or with your name) on our website and social media. Would you be comfortable with that?\n\nEither way, thank you for trusting us with your care and for recommending us to your friends.\n\nWith gratitude,\nThe SafeSight x LAISA Team",
+        urgent: false
+    }
+];
+
+// Render inbox list
+const inboxList = document.getElementById('inboxList');
+emails.forEach((email, index) => {
+    const item = document.createElement('div');
+    item.className = 'email-item' + (email.urgent ? ' urgent-row' : '');
+    item.style.animationDelay = `${0.6 + index * 0.08}s`;
+    item.dataset.id = email.id;
+
+    item.innerHTML = `
+        <div class="email-item-top">
+            <div class="email-sender">${email.sender}</div>
+            <div class="email-time">${email.time}</div>
+        </div>
+        <div class="email-subject">${email.subject}</div>
+        <div class="email-preview">${email.preview}</div>
+        <span class="email-badge badge-${email.badge}">
+            <span class="badge-dot"></span>
+            ${email.badgeText}
+        </span>
+    `;
+
+    item.addEventListener('click', () => selectEmail(email.id));
+    inboxList.appendChild(item);
+});
+
+function selectEmail(id) {
+    const email = emails.find(e => e.id === id);
+    if (!email) return;
+
+    // Update active state in inbox
+    document.querySelectorAll('.email-item').forEach(el => {
+        el.classList.toggle('active', parseInt(el.dataset.id) === id);
+    });
+
+    // Hide empty state, show detail
+    document.getElementById('detailEmpty').style.display = 'none';
+    const detailContent = document.getElementById('detailContent');
+    detailContent.style.display = 'block';
+
+    // Build detail HTML
+    let urgentHTML = '';
+    if (email.urgent) {
+        urgentHTML = `
+            <div class="urgent-callout">
+                <div class="urgent-callout-icon">&#9888;</div>
+                <div>
+                    <div class="urgent-callout-text">Emergency Protocol Activated</div>
+                    <div class="urgent-callout-sub">Dr. Mokoena notified &bull; Emergency phone call triggered to 082 555 0147 &bull; Priority queue #1</div>
+                </div>
+            </div>
+        `;
+    }
+
+    detailContent.innerHTML = `
+        <div class="detail-header">
+            <div class="detail-subject">${email.subject}</div>
+            <div class="detail-meta">
+                <div class="detail-meta-item"><strong>From:</strong> ${email.sender}</div>
+                <div class="detail-meta-item"><strong>Time:</strong> ${email.time}</div>
+                <div class="detail-meta-item"><strong>Patient ID:</strong> SF-2026-${4000 + email.id * 120}</div>
+                <div class="detail-classification">
+                    <span class="email-badge badge-${email.badge}">
+                        <span class="badge-dot"></span>
+                        ${email.badgeText}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="detail-sections">
+            ${urgentHTML}
+            <div class="detail-section">
+                <div class="section-label">Original Email</div>
+                <div class="section-card">
+                    <div class="email-body-text">${email.body}</div>
+                </div>
+            </div>
+            <div class="detail-section">
+                <div class="section-label">AI Analysis</div>
+                <div class="section-card">
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <div class="analysis-item-label">Category</div>
+                            <div class="analysis-item-value gold">${email.category}</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-item-label">Confidence</div>
+                            <div class="analysis-item-value ${email.confidence >= 95 ? 'green' : 'amber'}">${email.confidence}%</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill ${email.confidenceLevel}" style="width: ${email.confidence}%;"></div>
+                            </div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-item-label">Action Taken</div>
+                            <div class="analysis-item-value">${email.action}</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-item-label">Response Status</div>
+                            <div class="analysis-item-value">
+                                <span class="ai-response-status status-${email.aiStatus}">${email.aiStatusLabel}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-section">
+                <div class="section-label">AI-Drafted Response</div>
+                <div class="section-card ai-response-card">
+                    <div class="ai-response-header">
+                        <div class="ai-response-icon">AI</div>
+                        <div class="ai-response-label">LAISA AI Response</div>
+                        <span class="ai-response-status status-${email.aiStatus}">${email.aiStatusLabel}</span>
+                    </div>
+                    <div class="ai-response-body">${email.aiResponse}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Re-trigger animation
+    detailContent.style.animation = 'none';
+    detailContent.offsetHeight; // force reflow
+    detailContent.style.animation = 'fadeIn 0.35s forwards';
+}
+
+// Auto-select first email on load
+setTimeout(() => selectEmail(6), 1500);
+</script>
+
+</body>
+</html>

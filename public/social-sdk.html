@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Media SDK — LAISA Content Command</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #FAF8F5; --surface: #FFFFFF; --card: #FFFFFF;
+    --gold: #D4AF37; --gold-dim: #AA8B2C;
+    --rose: #E91E63; --rose-dim: #C2185B; --pink-soft: #FCE4EC;
+    --light: #2D2D2D; --muted: #8E8585;
+    --green: #4CAF50; --blue: #1E5AA8;
+    --border: rgba(233,30,99,0.15); --shadow: rgba(0,0,0,0.06);
+    --font-heading: 'Playfair Display', serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+  body { background: var(--cream); color: var(--light); font-family: var(--font-sans); min-height: 100vh; line-height: 1.5; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+  .logo { font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--light); font-weight: 300; font-style: italic; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+  /* ─── PLATFORM SWITCHER ─── */
+  .platform-bar { display: flex; gap: 12px; margin-bottom: 24px; }
+  .platform-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+  .platform-btn:hover { border-color: var(--rose); }
+  .platform-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+
+  /* ─── STATS ROW ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-box { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 16px var(--shadow); }
+  .stat-box h4 { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-box .value { font-family: var(--font-heading); font-size: 28px; color: var(--pink-text); }
+  .stat-box .delta { font-size: 12px; color: var(--green); margin-top: 4px; }
+
+  /* ─── CONTENT GRID ─── */
+  .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .panel { background: var(--card); border-radius: 12px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 20px var(--shadow); }
+  .panel-title { font-family: var(--font-heading); font-size: 18px; color: var(--pink-text); margin-bottom: 16px; }
+
+  /* ─── POST CREATOR ─── */
+  .post-input { width: 100%; min-height: 120px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--cream); color: var(--light); font-family: var(--font-sans); font-size: 14px; resize: vertical; margin-bottom: 12px; }
+  .post-input:focus { outline: none; border-color: var(--rose); }
+  .post-actions { display: flex; justify-content: space-between; align-items: center; }
+  .post-btn { padding: 10px 24px; border-radius: 8px; border: none; background: var(--rose); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
+  .post-btn:hover { background: var(--rose-dim); }
+
+  /* ─── SCHEDULED POSTS ─── */
+  .post-list { display: flex; flex-direction: column; gap: 12px; }
+  .post-item { display: flex; gap: 12px; padding: 14px; background: var(--cream); border-radius: 10px; border: 1px solid var(--border); }
+  .post-thumb { width: 48px; height: 48px; background: linear-gradient(135deg, var(--pink-soft), var(--cream)); border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .post-details { flex: 1; }
+  .post-details h4 { font-size: 14px; margin-bottom: 4px; }
+  .post-details p { font-size: 12px; color: var(--muted); }
+  .post-meta { display: flex; gap: 12px; margin-top: 6px; }
+  .post-meta span { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--pink-soft); color: var(--rose); }
+  .post-stats { text-align: right; }
+  .post-stats .num { font-family: var(--font-heading); font-size: 18px; color: var(--gold); }
+  .post-stats .label { font-size: 10px; color: var(--muted); }
+
+  /* ─── ANALYTICS ─── */
+  .chart-placeholder { height: 160px; background: linear-gradient(180deg, var(--pink-soft), transparent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--rose); font-size: 14px; margin-bottom: 16px; }
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .metric { padding: 12px; background: var(--cream); border-radius: 8px; }
+  .metric h5 { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+  .metric .num { font-family: var(--font-heading); font-size: 20px; color: var(--pink-text); }
+
+  @media (max-width: 1024px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">LAISA <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="laisa-agent-os.html" class="nav-link">Elegance Hub</a>
+    <a href="laisa-crm.html" class="nav-link">Aesthetic CRM</a>
+    <a href="charlie.html" class="nav-link">Charlie</a>
+    <a href="hermes.html" class="nav-link">Hermes</a>
+    <a href="social-sdk.html" class="nav-link active">Social SDK</a>
+  </div>
+</div>
+
+<div class="main">
+  <!-- PLATFORM SWITCHER -->
+  <div class="platform-bar">
+    <button class="platform-btn active" onclick="switchPlatform('all')">📊 All Platforms</button>
+    <button class="platform-btn" onclick="switchPlatform('instagram')">📷 Instagram</button>
+    <button class="platform-btn" onclick="switchPlatform('facebook')">👥 Facebook</button>
+    <button class="platform-btn" onclick="switchPlatform('whatsapp')">💬 WhatsApp</button>
+    <button class="platform-btn" onclick="switchPlatform('google')">🔍 Google Ads</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <h4>Followers / Reach</h4>
+      <div class="value" id="statReach">12.8K</div>
+      <div class="delta">↑ 1.2K this week</div>
+    </div>
+    <div class="stat-box">
+      <h4>Engagement Rate</h4>
+      <div class="value" id="statEngage">4.2%</div>
+      <div class="delta">↑ 0.3% vs last week</div>
+    </div>
+    <div class="stat-box">
+      <h4>Content Posts</h4>
+      <div class="value" id="statPosts">24</div>
+      <div class="delta">3 scheduled today</div>
+    </div>
+    <div class="stat-box">
+      <h4>Conversions</h4>
+      <div class="value" id="statConv">18</div>
+      <div class="delta">8 from Instagram</div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <!-- LEFT: POST CREATOR + SCHEDULED -->
+    <div>
+      <div class="panel" style="margin-bottom: 24px;">
+        <div class="panel-title">Create Content</div>
+        <textarea class="post-input" id="postText" placeholder="What's the message? Naledi will optimize it for each platform...">Behind the scenes at LAISA: Dr. Mentor preparing a custom chemical peel protocol for a VIP client. Precision meets artistry. ✨</textarea>
+        <div class="post-actions">
+          <div style="display: flex; gap: 8px;">
+            <button style="padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--cream); color: var(--muted); font-size: 12px; cursor: pointer;">📷 Add Image</button>
+            <button style="padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--cream); color: var(--muted); font-size: 12px; cursor: pointer;">🎬 Add Video</button>
+          </div>
+          <button class="post-btn" onclick="schedulePost()">Schedule Post</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Scheduled & Published</div>
+        <div class="post-list" id="postList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: ANALYTICS -->
+    <div class="panel">
+      <div class="panel-title">Performance Analytics</div>
+      <div class="chart-placeholder">📈 Engagement Trend — Last 30 Days</div>
+      <div class="metrics">
+        <div class="metric">
+          <h5>Instagram</h5>
+          <div class="num">3,847 followers</div>
+          <div style="font-size: 11px; color: var(--green);">↑ 142 this week</div>
+        </div>
+        <div class="metric">
+          <h5>Website Traffic</h5>
+          <div class="num">412 sessions</div>
+          <div style="font-size: 11px; color: var(--green);">↑ 18% vs last week</div>
+        </div>
+        <div class="metric">
+          <h5>WhatsApp</h5>
+          <div class="num">12 msgs / 24h</div>
+          <div style="font-size: 11px; color: var(--green);">4 conversations</div>
+        </div>
+        <div class="metric">
+          <h5>Google Ads</h5>
+          <div class="num">R2,400 spent</div>
+          <div style="font-size: 11px; color: var(--green);">18 conversions</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+        <div class="panel-title" style="font-size: 16px;">Top Performing Content</div>
+        <div class="post-list">
+          <div class="post-item">
+            <div class="post-thumb">🎥</div>
+            <div class="post-details">
+              <h4>The Art of Aging Gracefully</h4>
+              <p>Behind the scenes at LAISA</p>
+              <div class="post-meta">
+                <span>142 likes</span>
+                <span>18 comments</span>
+              </div>
+            </div>
+          </div>
+          <div class="post-item">
+            <div class="post-thumb">📸</div>
+            <div class="post-details">
+              <h4>Skin Longevity Series</h4>
+              <p>3 non-negotiables every patient should know</p>
+              <div class="post-meta">
+                <span>89 likes</span>
+                <span>7 comments</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const posts = [
+  { id: 1, title: 'The Art of Aging Gracefully', desc: 'Behind the scenes at LAISA', type: 'VIDEO', platform: 'Instagram', time: 'Today 14:00', status: 'Published', likes: 142, comments: 18 },
+  { id: 2, title: 'Skin Longevity: 3 non-negotiables', desc: 'Every patient should know', type: 'IMAGE', platform: 'Instagram', time: 'Yesterday 12:00', status: 'Published', likes: 89, comments: 7 },
+  { id: 3, title: 'Dr. Mentor on collagen remodelling', desc: 'Science of beautiful skin', type: 'REEL', platform: 'Instagram', time: 'May 17 12:00', status: 'Published', likes: 210, comments: 31 },
+  { id: 4, title: 'Weekend Special: Chemical Peel', desc: 'Introductory offer for new clients', type: 'STORY', platform: 'Instagram', time: 'Today 18:00', status: 'Scheduled', likes: 0, comments: 0 },
+  { id: 5, title: 'Client Transformation: L. Mokoena', desc: 'Full Face Rejuvenation journey', type: 'CAROUSEL', platform: 'Instagram', time: 'Tomorrow 10:00', status: 'Scheduled', likes: 0, comments: 0 }
+];
+
+function renderPosts() {
+  const list = document.getElementById('postList');
+  list.innerHTML = posts.map(p => `
+    <div class="post-item">
+      <div class="post-thumb">${p.type === 'VIDEO' ? '🎥' : p.type === 'REEL' ? '🎬' : p.type === 'STORY' ? '⚡' : '📸'}</div>
+      <div class="post-details">
+        <h4>${p.title}</h4>
+        <p>${p.desc}</p>
+        <div class="post-meta">
+          <span>${p.platform}</span>
+          <span>${p.time}</span>
+          <span style="background: ${p.status === 'Published' ? 'rgba(76,175,80,0.1)' : 'var(--pink-soft)'}; color: ${p.status === 'Published' ? 'var(--green)' : 'var(--rose)'};">${p.status}</span>
+        </div>
+      </div>
+      <div class="post-stats">
+        <div class="num">${p.likes || '-'}</div>
+        <div class="label">likes</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function schedulePost() {
+  const text = document.getElementById('postText').value.trim();
+  if (!text) return alert('Enter some content first');
+  posts.unshift({
+    id: posts.length + 1,
+    title: text.slice(0, 40) + (text.length > 40 ? '...' : ''),
+    desc: 'New scheduled post',
+    type: 'IMAGE',
+    platform: 'Instagram',
+    time: 'Scheduled',
+    status: 'Scheduled',
+    likes: 0, comments: 0
+  });
+  renderPosts();
+  document.getElementById('postText').value = '';
+}
+
+function switchPlatform(platform) {
+  document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  console.log('Switched to:', platform);
+}
+
+renderPosts();
+</script>
+
+</body>
+</html>

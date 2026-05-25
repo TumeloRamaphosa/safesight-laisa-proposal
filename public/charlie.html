@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlie — LAISA Voice Concierge</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #FAF8F5; --surface: #FFFFFF; --card: #FFFFFF;
+    --gold: #D4AF37; --gold-dim: #AA8B2C;
+    --rose: #E91E63; --rose-dim: #C2185B; --pink-soft: #FCE4EC;
+    --light: #2D2D2D; --muted: #8E8585;
+    --green: #4CAF50; --red: #F44336;
+    --border: rgba(233,30,99,0.15); --shadow: rgba(0,0,0,0.06);
+    --font-heading: 'Playfair Display', serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+  body { background: var(--cream); color: var(--light); font-family: var(--font-sans); min-height: 100vh; display: flex; flex-direction: column; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+  .logo { font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--light); font-weight: 300; font-style: italic; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .main { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 40px; gap: 40px; align-items: center; }
+
+  /* ─── CHARLIE VISUAL ─── */
+  .charlie-visual { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .charlie-orb {
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #FF80AB, var(--rose), var(--rose-dim));
+    box-shadow: 0 0 60px rgba(233,30,99,0.3), 0 0 120px rgba(233,30,99,0.1);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; animation: breathe 4s ease-in-out infinite;
+  }
+  .charlie-orb::before {
+    content: ''; position: absolute; inset: -10px; border-radius: 50%;
+    border: 2px solid rgba(233,30,99,0.2); animation: ripple 3s ease-out infinite;
+  }
+  .charlie-orb::after {
+    content: ''; position: absolute; inset: -20px; border-radius: 50%;
+    border: 1px solid rgba(233,30,99,0.1); animation: ripple 3s ease-out infinite 1s;
+  }
+  .charlie-face { font-size: 64px; }
+  @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.3); opacity: 0; } }
+
+  .charlie-status { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .charlie-desc { text-align: center; max-width: 320px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .charlie-desc strong { color: var(--pink-text); }
+
+  /* ─── CHAT INTERFACE ─── */
+  .chat-panel { flex: 1; background: var(--card); border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 40px var(--shadow); display: flex; flex-direction: column; height: 600px; overflow: hidden; }
+  .chat-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .chat-header h2 { font-family: var(--font-heading); font-size: 20px; color: var(--pink-text); }
+  .chat-header span { font-size: 12px; color: var(--muted); }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .message { max-width: 80%; padding: 14px 18px; border-radius: 14px; font-size: 14px; line-height: 1.5; animation: slideIn 0.3s ease-out; }
+  .message.user { align-self: flex-end; background: var(--pink-soft); color: var(--rose); border-bottom-right-radius: 4px; }
+  .message.charlie { align-self: flex-start; background: var(--cream); color: var(--light); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .message-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .chat-input { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+  .chat-input input { flex: 1; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--cream); color: var(--light); font-size: 14px; }
+  .chat-input input:focus { outline: none; border-color: var(--rose); }
+  .chat-input button { padding: 12px 20px; border-radius: 10px; border: none; background: var(--rose); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
+  .chat-input button:hover { background: var(--rose-dim); }
+
+  .voice-btn {
+    width: 56px; height: 56px; border-radius: 50%; border: none;
+    background: var(--rose); color: white; font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(233,30,99,0.3);
+    transition: 0.3s; margin-top: 8px;
+  }
+  .voice-btn:hover { transform: scale(1.1); }
+  .voice-btn.recording { background: var(--red); animation: pulse 1s infinite; }
+
+  @media (max-width: 900px) {
+    .main { flex-direction: column; padding: 20px; }
+    .chat-panel { width: 100%; height: 500px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">LAISA <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="laisa-agent-os.html" class="nav-link">Elegance Hub</a>
+    <a href="safesight-agent-os.html" class="nav-link">Switch to SafeSight</a>
+    <a href="laisa-crm.html" class="nav-link">Aesthetic CRM</a>
+    <a href="charlie.html" class="nav-link active">Charlie</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="charlie-visual">
+    <div class="charlie-orb" id="charlieOrb">
+      <div class="charlie-face">🎙️</div>
+    </div>
+    <div class="charlie-status">
+      <div class="status-dot"></div>
+      <span id="statusText">Online — ElevenLabs Voice Active</span>
+    </div>
+    <div class="charlie-desc">
+      <strong>Charlie</strong> is your AI voice concierge. Warm, professional, and always ready to assist with bookings, product knowledge, and post-treatment care.
+    </div>
+    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Hold to speak with Charlie">
+      🎤
+    </button>
+    <p style="font-size: 12px; color: var(--muted);">Click microphone to simulate voice call</p>
+  </div>
+
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h2>Charlie</h2>
+      <span>Voice + Text AI Agent</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message charlie">
+        Hello! I'm Charlie, your LAISA aesthetic concierge. I can help with appointment bookings, treatment information, and post-care guidance. How may I assist you today?
+        <div class="message-time">Just now</div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Type a message or use voice..." onkeypress="if(event.key==='Enter') sendMessage()">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const responses = {
+  booking: "I'd be happy to help you book an appointment. We have slots available this week for consultations, treatments, and follow-ups. Would you prefer morning or afternoon?",
+  price: "Our treatment pricing varies based on your specific needs. A Full Face Rejuvenation starts at R24,500, while Chemical Peels begin at R3,500 per session. I'd recommend booking a complimentary consultation for a personalized quote.",
+  peel: "Chemical peels are excellent for skin resurfacing! We offer TCA, Glycolic, and Salicylic peels tailored to your skin type. A series of 3 sessions is typically recommended for optimal results. Shall I book a skin assessment?",
+  laser: "Laser treatments at LAISA include hair removal, skin resurfacing, and pigmentation correction. All procedures are performed by certified clinicians using medical-grade equipment. Would you like to know about a specific treatment?",
+  botox: "Our Botox and filler treatments are administered by Dr. Sarah Nkosi, our lead aesthetic physician. Results typically last 3-6 months. A consultation is required before your first treatment. Shall I check her availability?",
+  aftercare: "Aftercare is crucial for optimal results! Avoid direct sun for 48 hours, use SPF 50+ daily, and follow the skincare regimen provided. If you experience any unusual swelling or redness, please contact us immediately. I'm here 24/7 for urgent concerns.",
+  hours: "LAISA is open Monday to Saturday, 9:00 AM to 6:00 PM. We also offer limited Sunday appointments for VIP members. Our agents are available via WhatsApp and voice call outside these hours for urgent inquiries.",
+  location: "We're located at 45 Rosebank Boulevard, Johannesburg. Complimentary valet parking is available for all clients. I can also send you our location via WhatsApp if you'd like.",
+  default: "That's a great question! Let me connect you with the right specialist or check our knowledge base. In the meantime, would you like me to book a complimentary consultation where we can discuss this in detail?"
+};
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, 'user');
+  input.value = '';
+
+  // Simulate Charlie thinking
+  setTimeout(() => {
+    const lower = text.toLowerCase();
+    let reply = responses.default;
+    if (lower.includes('book') || lower.includes('appointment') || lower.includes('slot')) reply = responses.booking;
+    else if (lower.includes('price') || lower.includes('cost') || lower.includes('how much')) reply = responses.price;
+    else if (lower.includes('peel') || lower.includes('chemical')) reply = responses.peel;
+    else if (lower.includes('laser')) reply = responses.laser;
+    else if (lower.includes('botox') || lower.includes('filler')) reply = responses.botox;
+    else if (lower.includes('after') || lower.includes('care') || lower.includes('recovery')) reply = responses.aftercare;
+    else if (lower.includes('hour') || lower.includes('open') || lower.includes('time')) reply = responses.hours;
+    else if (lower.includes('location') || lower.includes('address') || lower.includes('where')) reply = responses.location;
+
+    addMessage(reply, 'charlie');
+    speak(reply);
+  }, 800);
+}
+
+function addMessage(text, sender) {
+  const container = document.getElementById('chatMessages');
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const div = document.createElement('div');
+  div.className = `message ${sender}`;
+  div.innerHTML = `${text}<div class="message-time">${time}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+let currentAudio = null;
+
+async function speak(text) {
+  // Stop any playing audio
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+  const status = document.getElementById('statusText');
+  status.textContent = 'Charlie is speaking...';
+
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!res.ok) throw new Error('TTS failed');
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    currentAudio = new Audio(url);
+    currentAudio.onended = () => {
+      status.textContent = 'Online — ElevenLabs Voice Active';
+      URL.revokeObjectURL(url);
+    };
+    await currentAudio.play();
+  } catch (e) {
+    console.log('ElevenLabs proxy unavailable, using browser voice');
+    status.textContent = 'Online — Browser Voice Mode';
+    // Fallback to browser TTS with best available voice
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v => /Samantha|Victoria|Karen|Tessa|Female/i.test(v.name)) || voices[0];
+      const u = new SpeechSynthesisUtterance(text);
+      u.voice = preferred;
+      u.rate = 0.92;
+      u.pitch = 1.08;
+      u.lang = 'en-GB';
+      u.onend = () => { status.textContent = 'Online — Browser Voice Mode'; };
+      window.speechSynthesis.speak(u);
+    }
+  }
+}
+
+let recording = false;
+function toggleVoice() {
+  const btn = document.getElementById('voiceBtn');
+  const status = document.getElementById('statusText');
+  if (!recording) {
+    recording = true;
+    btn.classList.add('recording');
+    status.textContent = 'Listening... Speak now';
+    // Simulate voice input after 2 seconds
+    setTimeout(() => {
+      if (recording) {
+        const phrases = [
+          "I'd like to book a chemical peel appointment",
+          "How much does laser hair removal cost?",
+          "What should I do after my treatment?",
+          "What are your opening hours?"
+        ];
+        const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        addMessage(`🎤 "${phrase}"`, 'user');
+        toggleVoice();
+        // Auto-respond
+        setTimeout(() => sendMessage(), 500);
+      }
+    }, 2000);
+  } else {
+    recording = false;
+    btn.classList.remove('recording');
+    status.textContent = 'Online — ElevenLabs Voice Active';
+  }
+}
+</script>
+
+</body>
+</html>

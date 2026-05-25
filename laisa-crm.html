@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAISA Aesthetic CRM — Client Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #FAF8F5; --surface: #FFFFFF; --card: #FFFFFF;
+    --gold: #D4AF37; --gold-dim: #AA8B2C;
+    --rose: #E91E63; --rose-dim: #C2185B; --pink-soft: #FCE4EC;
+    --light: #2D2D2D; --muted: #8E8585;
+    --green: #4CAF50; --red: #F44336;
+    --border: rgba(233,30,99,0.15); --shadow: rgba(0,0,0,0.06);
+    --font-heading: 'Playfair Display', serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+  body { background: var(--cream); color: var(--light); font-family: var(--font-sans); min-height: 100vh; line-height: 1.5; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+  .logo { font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--light); font-weight: 300; font-style: italic; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .main-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; padding: 24px; max-width: 1600px; margin: 0 auto; }
+
+  /* ─── SEARCH & ADD ─── */
+  .crm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .crm-title { font-family: var(--font-heading); font-size: 28px; color: var(--pink-text); }
+  .search-bar { display: flex; gap: 12px; }
+  .search-input { padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--light); font-size: 14px; min-width: 260px; }
+  .search-input:focus { outline: none; border-color: var(--rose); }
+  .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; }
+  .btn-primary { background: var(--rose); color: white; }
+  .btn-primary:hover { background: var(--rose-dim); }
+  .btn-gold { background: var(--gold); color: #2D2D2D; }
+  .btn-gold:hover { background: var(--gold-dim); }
+
+  /* ─── CLIENT LIST ─── */
+  .client-list { display: flex; flex-direction: column; gap: 12px; }
+  .client-card { background: var(--card); border-radius: 12px; padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
+  .client-card:hover, .client-card.active { border-color: var(--rose); box-shadow: 0 4px 16px var(--shadow); }
+  .client-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .client-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--pink-soft), var(--cream)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--rose); font-size: 16px; border: 2px solid var(--rose); }
+  .client-name { font-weight: 600; font-size: 15px; }
+  .client-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--pink-soft); color: var(--rose); font-weight: 600; }
+  .client-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; }
+
+  /* ─── CLIENT DETAIL ─── */
+  .detail-panel { background: var(--card); border-radius: 16px; padding: 28px; border: 1px solid var(--border); box-shadow: 0 8px 32px var(--shadow); }
+  .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .detail-profile { display: flex; gap: 16px; align-items: center; }
+  .detail-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--pink-soft), var(--cream)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--rose); font-size: 24px; border: 2px solid var(--rose); }
+  .detail-info h2 { font-family: var(--font-heading); font-size: 24px; margin-bottom: 4px; color: var(--pink-text); }
+  .detail-info p { font-size: 13px; color: var(--muted); }
+  .detail-stats { display: flex; gap: 20px; }
+  .detail-stat { text-align: center; }
+  .detail-stat-value { font-family: var(--font-heading); font-size: 22px; color: var(--gold); }
+  .detail-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+
+  /* ─── TREATMENT TIMELINE ─── */
+  .section-title { font-family: var(--font-heading); font-size: 18px; margin-bottom: 16px; color: var(--pink-text); }
+  .timeline { display: flex; flex-direction: column; gap: 16px; }
+  .timeline-item { display: flex; gap: 16px; padding: 16px; background: var(--cream); border-radius: 10px; border-left: 3px solid var(--rose); }
+  .timeline-date { font-size: 12px; color: var(--muted); min-width: 80px; }
+  .timeline-content h4 { font-size: 14px; margin-bottom: 4px; }
+  .timeline-content p { font-size: 12px; color: var(--muted); }
+  .timeline-price { font-family: var(--font-mono); color: var(--gold); font-weight: 700; margin-left: auto; }
+
+  /* ─── UPCOMING APPOINTMENTS ─── */
+  .appointments { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .appt-card { background: var(--cream); border-radius: 10px; padding: 16px; border: 1px solid var(--border); }
+  .appt-time { font-family: var(--font-mono); font-size: 13px; color: var(--rose); font-weight: 700; }
+  .appt-service { font-size: 14px; font-weight: 600; margin: 4px 0; }
+  .appt-status { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: var(--pink-soft); color: var(--rose); display: inline-block; }
+
+  /* ─── NOTES ─── */
+  .notes-area { margin-top: 24px; }
+  .notes-text { width: 100%; min-height: 100px; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--cream); color: var(--light); font-family: var(--font-sans); font-size: 13px; resize: vertical; }
+  .notes-text:focus { outline: none; border-color: var(--rose); }
+
+  @media (max-width: 1024px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">LAISA <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="laisa-agent-os.html" class="nav-link">Elegance Hub</a>
+    <a href="safesight-agent-os.html" class="nav-link">Switch to SafeSight</a>
+    <a href="laisa-crm.html" class="nav-link active">Aesthetic CRM</a>
+    <a href="charlie.html" class="nav-link">Charlie</a>
+  </div>
+</div>
+
+<div class="main-grid">
+  <!-- LEFT: CLIENT LIST -->
+  <div>
+    <div class="crm-header">
+      <div class="crm-title">Clientele</div>
+      <div class="search-bar">
+        <input type="text" class="search-input" id="clientSearch" placeholder="Search clients..." onkeyup="filterClients()">
+        <button class="btn btn-primary" onclick="addClient()">+ Add</button>
+      </div>
+    </div>
+    <div class="client-list" id="clientList">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- RIGHT: CLIENT DETAIL -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <div class="detail-profile">
+        <div class="detail-avatar" id="detailAvatar">LM</div>
+        <div class="detail-info">
+          <h2 id="detailName">Lebohang Mokoena</h2>
+          <p id="detailContact">📱 +27 82 345 6789 · 📧 lebohang.m@email.com</p>
+        </div>
+      </div>
+      <div class="detail-stats">
+        <div class="detail-stat">
+          <div class="detail-stat-value" id="detailLifetime">R48,200</div>
+          <div class="detail-stat-label">Lifetime Value</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-value" id="detailVisits">12</div>
+          <div class="detail-stat-label">Visits</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-value" id="detailLast">14d</div>
+          <div class="detail-stat-label">Last Visit</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Treatment History</div>
+    <div class="timeline" id="timeline">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="appointments" id="appointments">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="notes-area">
+      <div class="section-title">Aesthetic Notes</div>
+      <textarea class="notes-text" id="clientNotes" placeholder="Add notes about client preferences, allergies, treatment outcomes...">Premium client. Prefers afternoon appointments. Sensitive to hyaluronic acid. Always books Full Face Rejuvenation + Chemical Peel combo. Referral source: Instagram.</textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const clients = [
+  { id: 1, name: 'Lebohang Mokoena', initials: 'LM', phone: '+27 82 345 6789', email: 'lebohang.m@email.com', tag: 'VIP', lifetime: 'R48,200', visits: 12, last: '14d', treatments: [
+    { date: '2026-05-05', name: 'Full Face Rejuvenation', desc: 'Laser resurfacing + PRP', price: 'R24,500' },
+    { date: '2026-04-12', name: 'Chemical Peel Series', desc: '3-session TCA peel', price: 'R12,000' },
+    { date: '2026-03-20', name: 'Dermal Fillers', desc: 'Cheek augmentation', price: 'R8,200' },
+    { date: '2026-02-08', name: 'Botox Touch-up', desc: 'Forehead + crow\'s feet', price: 'R3,500' }
+  ], appointments: [
+    { time: 'Today 14:00', service: 'Follow-up Consultation', status: 'Confirmed' },
+    { time: 'Jun 15 10:00', service: 'Chemical Peel — Session 2', status: 'Booked' }
+  ]},
+  { id: 2, name: 'Catherine Botha', initials: 'CB', phone: '+27 83 456 7890', email: 'cathy.botha@email.com', tag: 'Elite', lifetime: 'R76,800', visits: 18, last: '3d', treatments: [
+    { date: '2026-05-16', name: 'Elite Membership Renewal', desc: 'Annual package', price: 'R8,200' },
+    { date: '2026-05-02', name: 'Thread Lift', desc: 'Mid-face suspension', price: 'R18,500' },
+    { date: '2026-04-10', name: 'Skin Booster', desc: 'Profhilo full face', price: 'R6,800' }
+  ], appointments: [
+    { time: 'May 28 11:00', service: 'Profhilo — Session 2', status: 'Booked' }
+  ]},
+  { id: 3, name: 'Zandile Khumalo', initials: 'ZK', phone: '+27 84 567 8901', email: 'zandi.k@email.com', tag: 'New', lifetime: 'R12,000', visits: 2, last: '45d', treatments: [
+    { date: '2026-04-05', name: 'Chemical Peel Series', desc: 'Introductory package', price: 'R12,000' }
+  ], appointments: [
+    { time: 'May 25 09:30', service: 'Peel Session 2 + Consult', status: 'Pending' }
+  ]},
+  { id: 4, name: 'Amahle Dlamini', initials: 'AD', phone: '+27 85 678 9012', email: 'amahle.d@email.com', tag: 'VIP', lifetime: 'R34,500', visits: 8, last: '7d', treatments: [
+    { date: '2026-05-12', name: 'Microneedling + PRP', desc: 'Hair restoration', price: 'R4,500' },
+    { date: '2026-04-22', name: 'Laser Hair Removal', desc: 'Full legs package', price: 'R15,000' },
+    { date: '2026-03-15', name: 'Hydrafacial', desc: 'Signature treatment', price: 'R2,800' }
+  ], appointments: [
+    { time: 'May 22 16:00', service: 'PRP — Session 3', status: 'Confirmed' }
+  ]},
+  { id: 5, name: 'Priya Naidoo', initials: 'PN', phone: '+27 86 789 0123', email: 'priya.n@email.com', tag: 'Regular', lifetime: 'R22,100', visits: 6, last: '21d', treatments: [
+    { date: '2026-04-28', name: 'Botox + Fillers', desc: 'Lip augmentation + glabella', price: 'R7,200' },
+    { date: '2026-03-30', name: 'Chemical Peel', desc: 'Glycolic acid 35%', price: 'R3,500' }
+  ], appointments: [
+    { time: 'Jun 02 13:30', service: 'Botox Touch-up', status: 'Booked' }
+  ]}
+];
+
+let activeClient = clients[0];
+
+function renderClientList() {
+  const list = document.getElementById('clientList');
+  list.innerHTML = clients.map(c => `
+    <div class="client-card ${c.id === activeClient.id ? 'active' : ''}" onclick="selectClient(${c.id})">
+      <div class="client-header">
+        <div class="client-avatar">${c.initials}</div>
+        <div>
+          <div class="client-name">${c.name}</div>
+          <span class="client-tag">${c.tag}</span>
+        </div>
+      </div>
+      <div class="client-meta">
+        <span>${c.visits} visits</span>
+        <span>${c.lifetime}</span>
+        <span>Last: ${c.last}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectClient(id) {
+  activeClient = clients.find(c => c.id === id);
+  renderClientList();
+  renderDetail();
+}
+
+function renderDetail() {
+  document.getElementById('detailAvatar').textContent = activeClient.initials;
+  document.getElementById('detailName').textContent = activeClient.name;
+  document.getElementById('detailContact').textContent = `📱 ${activeClient.phone} · 📧 ${activeClient.email}`;
+  document.getElementById('detailLifetime').textContent = activeClient.lifetime;
+  document.getElementById('detailVisits').textContent = activeClient.visits;
+  document.getElementById('detailLast').textContent = activeClient.last;
+
+  document.getElementById('timeline').innerHTML = activeClient.treatments.map(t => `
+    <div class="timeline-item">
+      <div class="timeline-date">${t.date}</div>
+      <div class="timeline-content">
+        <h4>${t.name}</h4>
+        <p>${t.desc}</p>
+      </div>
+      <div class="timeline-price">${t.price}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('appointments').innerHTML = activeClient.appointments.map(a => `
+    <div class="appt-card">
+      <div class="appt-time">${a.time}</div>
+      <div class="appt-service">${a.service}</div>
+      <span class="appt-status">${a.status}</span>
+    </div>
+  `).join('');
+}
+
+function filterClients() {
+  const term = document.getElementById('clientSearch').value.toLowerCase();
+  const cards = document.querySelectorAll('.client-card');
+  cards.forEach((card, i) => {
+    const match = clients[i].name.toLowerCase().includes(term) || clients[i].tag.toLowerCase().includes(term);
+    card.style.display = match ? 'flex' : 'none';
+  });
+}
+
+function addClient() {
+  const name = prompt('Client name:');
+  if (name) {
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const newClient = { id: clients.length + 1, name, initials, phone: '—', email: '—', tag: 'New', lifetime: 'R0', visits: 0, last: '—', treatments: [], appointments: [] };
+    clients.push(newClient);
+    renderClientList();
+  }
+}
+
+renderClientList();
+renderDetail();
+</script>
+
+</body>
+</html>

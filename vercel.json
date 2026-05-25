@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/tts", "destination": "/api/tts.js" },
+    { "source": "/api/twilio-sms", "destination": "/api/twilio-sms.js" },
+    { "source": "/api/composio-social", "destination": "/api/composio-social.js" }
+  ]
+}

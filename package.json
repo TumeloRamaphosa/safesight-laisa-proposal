@@ -23,7 +23,8 @@
   },
   "scripts": {
     "dev": "remotion studio",
-    "build": "remotion bundle",
+    "build": "echo 'Static site — no build needed'",
+    "bundle": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"
   },

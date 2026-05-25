@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSight × LAISA — Practice Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --obsidian: #0A0A0A;
+    --surface: #111111;
+    --card: #1A1A1A;
+    --gold: #C9A84C;
+    --gold-dim: #A68A3E;
+    --light: #F5F0E8;
+    --muted: #8A8578;
+    --green: #4ADE80;
+    --green-dim: #166534;
+    --red: #EF4444;
+    --red-dim: #7F1D1D;
+    --amber: #F59E0B;
+    --font-heading: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Menlo, Consolas, monospace;
+  }
+
+  body {
+    background: var(--obsidian);
+    color: var(--light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Shimmer animation for gold numbers */
+  @keyframes shimmer {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; text-shadow: 0 0 20px rgba(201,168,76,0.3); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .shimmer { animation: shimmer 3s ease-in-out infinite; }
+
+  /* ─── TOP BAR ─── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    background: linear-gradient(180deg, rgba(26,26,26,0.8) 0%, var(--obsidian) 100%);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .top-bar-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--light);
+  }
+
+  .top-bar-title span {
+    color: var(--gold);
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.25);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(74,222,128,0.5);
+  }
+
+  .top-bar-right {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ─── MAIN GRID ─── */
+  .dashboard {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 24px 32px 40px;
+  }
+
+  /* ─── CARD SYSTEM ─── */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    border-left: 3px solid var(--gold);
+    padding: 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-left-color 0.2s ease;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.08), 0 2px 8px rgba(0,0,0,0.3);
+    border-left-color: #DDC06E;
+  }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-family: var(--font-mono);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.1;
+  }
+
+  .card-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  .card-sub.up { color: var(--green); }
+  .card-sub.down { color: var(--green); }
+  .card-sub.neutral { color: var(--muted); }
+
+  .arrow-up::before { content: '\2191'; }
+  .arrow-down::before { content: '\2193'; }
+
+  /* ─── REVENUE ROW ─── */
+  .revenue-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .sparkline-container {
+    margin-top: 12px;
+  }
+
+  .target-bar {
+    margin-top: 12px;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .target-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #DDC06E);
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .target-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  .patient-split {
+    margin-top: 10px;
+    display: flex;
+    gap: 24px;
+  }
+
+  .patient-split-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .patient-split-item .ps-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .patient-split-item .ps-val {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--light);
+  }
+
+  /* ─── MIDDLE SECTION ─── */
+  .middle-section {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  /* ─── APPOINTMENTS ─── */
+  .appts-card {
+    padding: 24px;
+  }
+
+  .appts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .appts-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--light);
+  }
+
+  .appts-count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .appts-timeline {
+    position: relative;
+  }
+
+  .appt-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr 1fr 120px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 8px;
+    transition: background 0.15s ease;
+  }
+
+  .appt-row:hover {
+    background: rgba(201,168,76,0.03);
+    border-radius: 6px;
+  }
+
+  .appt-row:last-child { border-bottom: none; }
+
+  .appt-time {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .appt-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--light);
+  }
+
+  .appt-doctor {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .appt-procedure {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+  }
+
+  .appt-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    width: fit-content;
+  }
+
+  .status-confirmed {
+    background: rgba(74,222,128,0.1);
+    color: var(--green);
+    border: 1px solid rgba(74,222,128,0.2);
+  }
+
+  .status-pending {
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .status-noshow {
+    background: rgba(239,68,68,0.1);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+
+  .noshow-warning {
+    grid-column: 1 / -1;
+    padding: 6px 12px;
+    margin: 4px 0 2px 0;
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: 6px;
+    font-size: 12px;
+    color: #FCA5A5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ─── PATIENT METRICS ─── */
+  .metrics-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .metric-item {
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .metric-item:first-child { padding-top: 4px; }
+  .metric-item:last-child { border-bottom: none; padding-bottom: 4px; }
+
+  .metric-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .metric-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .metric-value {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .metric-improvement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--green);
+    font-family: var(--font-mono);
+  }
+
+  .metric-improvement .from-val {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(138,133,120,0.4);
+  }
+
+  .metric-bar {
+    margin-top: 8px;
+    height: 4px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .metric-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.5s ease;
+  }
+
+  /* ─── BOTTOM SECTION ─── */
+  .bottom-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .ai-card, .charts-card {
+    padding: 24px;
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 16px;
+  }
+
+  .ai-stats-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 20px;
+  }
+
+  .ai-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ai-stat-val {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .ai-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-activity {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 8px;
+    font-size: 13px;
+    color: rgba(245,240,232,0.7);
+  }
+
+  .ai-activity-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ai-activity-time {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .reminder-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .reminder-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reminder-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .reminder-icon.sms { background: rgba(74,222,128,0.1); color: var(--green); }
+  .reminder-icon.wa { background: rgba(37,211,102,0.1); color: #25D366; }
+  .reminder-icon.escalated { background: rgba(239,68,68,0.1); color: var(--red); }
+
+  .reminder-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reminder-count {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--light);
+  }
+
+  .reminder-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── CHARTS ─── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    height: 100%;
+  }
+
+  .chart-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 140px;
+    padding-top: 8px;
+  }
+
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .bar {
+    width: 100%;
+    max-width: 48px;
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+    transition: height 1s ease, opacity 0.2s ease;
+    position: relative;
+  }
+
+  .bar:hover { opacity: 0.85; }
+
+  .bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .bar:hover .bar-value { opacity: 1; }
+
+  .bar-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  .pie-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pie-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .pie-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .pie-legend-label { color: var(--muted); }
+  .pie-legend-val { color: var(--light); font-family: var(--font-mono); font-weight: 600; margin-left: auto; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1200px) {
+    .revenue-row { grid-template-columns: repeat(2, 1fr); }
+    .middle-section { grid-template-columns: 1fr; }
+    .bottom-section { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .revenue-row { grid-template-columns: 1fr; }
+    .dashboard { padding: 16px; }
+    .top-bar { padding: 12px 16px; }
+    .card-value { font-size: 28px; }
+    .appt-row { grid-template-columns: 50px 1fr 1fr; }
+    .appt-doctor, .appt-procedure { display: none; }
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--obsidian); }
+  ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.4); }
+
+  /* delay animations for stagger */
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP BAR ─── -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="top-bar-title"><span>SafeSight</span> &times; <span>LAISA</span> &mdash; Practice Dashboard</div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      LIVE
+    </div>
+  </div>
+  <div class="top-bar-right" id="currentDate"></div>
+</div>
+
+<!-- ─── DASHBOARD ─── -->
+<div class="dashboard">
+
+  <!-- ─── REVENUE ROW ─── -->
+  <div class="revenue-row">
+    <!-- Today -->
+    <div class="card">
+      <div class="card-label">Today's Revenue</div>
+      <div class="card-value shimmer">R45,200</div>
+      <div class="card-sub up">
+        <span class="arrow-up"></span> 12% vs same day last week
+      </div>
+    </div>
+    <!-- Weekly -->
+    <div class="card">
+      <div class="card-label">Weekly Revenue</div>
+      <div class="card-value shimmer">R312,800</div>
+      <div class="sparkline-container">
+        <svg width="100%" height="36" viewBox="0 0 200 36" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,30 L33,22 L66,26 L100,14 L133,18 L166,8 L200,4 L200,36 L0,36 Z" fill="url(#sparkGrad)"/>
+          <path d="M0,30 L33,22 L66,26 L100,14 L133,18 L166,8 L200,4" fill="none" stroke="#C9A84C" stroke-width="2"/>
+          <circle cx="200" cy="4" r="3" fill="#C9A84C"/>
+        </svg>
+      </div>
+    </div>
+    <!-- Monthly -->
+    <div class="card">
+      <div class="card-label">Monthly Revenue</div>
+      <div class="card-value shimmer">R1,245,600</div>
+      <div class="target-bar">
+        <div class="target-fill" style="width: 83%"></div>
+      </div>
+      <div class="target-labels">
+        <span>R1.25M actual</span>
+        <span>R1.5M target</span>
+      </div>
+    </div>
+    <!-- Patient Volume -->
+    <div class="card">
+      <div class="card-label">Patient Volume</div>
+      <div class="card-value shimmer">24</div>
+      <div class="patient-split">
+        <div class="patient-split-item">
+          <span class="ps-label">Today</span>
+          <span class="ps-val">24</span>
+        </div>
+        <div class="patient-split-item">
+          <span class="ps-label">This Week</span>
+          <span class="ps-val">156</span>
+        </div>
+        <div class="patient-split-item">
+          <span class="ps-label">This Month</span>
+          <span class="ps-val">612</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MIDDLE: APPOINTMENTS + METRICS ─── -->
+  <div class="middle-section">
+    <!-- Appointments -->
+    <div class="card appts-card">
+      <div class="appts-header">
+        <div class="appts-title">Today's Appointments</div>
+        <div class="appts-count">12 scheduled &middot; 8am &ndash; 6pm</div>
+      </div>
+      <div class="appts-timeline">
+        <!-- Row 1 -->
+        <div class="appt-row">
+          <div class="appt-time">08:00</div>
+          <div class="appt-name">Naledi Molefe</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">LASIK Consultation</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 2 -->
+        <div class="appt-row">
+          <div class="appt-time">08:30</div>
+          <div class="appt-name">Johan van der Merwe</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Cataract Follow-up</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 3 -->
+        <div class="appt-row">
+          <div class="appt-time">09:00</div>
+          <div class="appt-name">Thandiwe Nkosi</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">Botox &amp; Fillers</div>
+          <div class="appt-status status-pending">Pending</div>
+        </div>
+        <!-- Row 4 -->
+        <div class="appt-row">
+          <div class="appt-time">09:30</div>
+          <div class="appt-name">Pieter du Plessis</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Retina Assessment</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 5 -->
+        <div class="appt-row">
+          <div class="appt-time">10:00</div>
+          <div class="appt-name">Amahle Dlamini</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">SMILE Pro Surgery</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 6: No-show risk -->
+        <div class="appt-row">
+          <div class="appt-time">10:30</div>
+          <div class="appt-name">Sibusiso Mbatha</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Glaucoma Review</div>
+          <div class="appt-status status-noshow">No-show risk</div>
+        </div>
+        <div class="noshow-warning">
+          &#9888;&#65039; No-show risk &mdash; patient has 2 previous no-shows. AI reminder sent + flagged for reception follow-up.
+        </div>
+        <!-- Row 7 -->
+        <div class="appt-row">
+          <div class="appt-time">11:00</div>
+          <div class="appt-name">Lerato Mokoena</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">PRK Pre-op</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 8 -->
+        <div class="appt-row">
+          <div class="appt-time">11:30</div>
+          <div class="appt-name">Christine Botha</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Skin Resurfacing</div>
+          <div class="appt-status status-pending">Pending</div>
+        </div>
+        <!-- Row 9 -->
+        <div class="appt-row">
+          <div class="appt-time">13:00</div>
+          <div class="appt-name">Kagiso Phiri</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">ICL Consultation</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 10 -->
+        <div class="appt-row">
+          <div class="appt-time">14:00</div>
+          <div class="appt-name">Fatima Ebrahim</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Eyelid Surgery Review</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+        <!-- Row 11 -->
+        <div class="appt-row">
+          <div class="appt-time">15:30</div>
+          <div class="appt-name">Marcus Steyn</div>
+          <div class="appt-doctor">Dr. Venter</div>
+          <div class="appt-procedure">Corneal Mapping</div>
+          <div class="appt-status status-pending">Pending</div>
+        </div>
+        <!-- Row 12 -->
+        <div class="appt-row">
+          <div class="appt-time">16:30</div>
+          <div class="appt-name">Zanele Khumalo</div>
+          <div class="appt-doctor">Dr. Pillay</div>
+          <div class="appt-procedure">Aesthetic Consultation</div>
+          <div class="appt-status status-confirmed">Confirmed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Metrics -->
+    <div class="card metrics-card">
+      <div class="section-title" style="margin-bottom: 4px;">Patient Metrics</div>
+
+      <div class="metric-item">
+        <div class="metric-top">
+          <div class="metric-label">No-show Rate (This Month)</div>
+          <div class="metric-value shimmer">8%</div>
+        </div>
+        <div class="metric-improvement">
+          <span class="from-val">20%</span>
+          <span>&rarr;</span>
+          <span style="color: var(--green); font-weight: 600;">8%</span>
+          <span style="color: var(--green);">&#9660; 60% reduction</span>
+        </div>
+        <div class="metric-bar">
+          <div class="metric-bar-fill" style="width: 8%; background: var(--green);"></div>
+        </div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-top">
+          <div class="metric-label">New Patients This Week</div>
+          <div class="metric-value shimmer">12</div>
+        </div>
+        <div class="metric-improvement">
+          <span class="from-val">8</span>
+          <span>&rarr;</span>
+          <span style="color: var(--gold); font-weight: 600;">12</span>
+          <span style="color: var(--green);">&#9650; +50%</span>
+        </div>
+        <div class="metric-bar">
+          <div class="metric-bar-fill" style="width: 60%; background: var(--gold);"></div>
+        </div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-top">
+          <div class="metric-label">Follow-up Compliance</div>
+          <div class="metric-value shimmer">94%</div>
+        </div>
+        <div class="metric-improvement">
+          <span style="color: var(--muted);">Target: 90%</span>
+          <span style="color: var(--green);">&#10003; Exceeding</span>
+        </div>
+        <div class="metric-bar">
+          <div class="metric-bar-fill" style="width: 94%; background: linear-gradient(90deg, var(--gold), var(--green));"></div>
+        </div>
+      </div>
+
+      <div class="metric-item">
+        <div class="metric-top">
+          <div class="metric-label">Average Wait Time</div>
+          <div class="metric-value shimmer">4 min</div>
+        </div>
+        <div class="metric-improvement">
+          <span class="from-val">22 min</span>
+          <span>&rarr;</span>
+          <span style="color: var(--green); font-weight: 600;">4 min</span>
+          <span style="color: var(--green);">&#9660; 82% faster</span>
+        </div>
+        <div class="metric-bar">
+          <div class="metric-bar-fill" style="width: 18%; background: var(--green);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── BOTTOM: AI + CHARTS ─── -->
+  <div class="bottom-section">
+    <!-- AI Assistant -->
+    <div class="card ai-card">
+      <div class="section-title">AI Assistant Activity</div>
+      <div class="ai-stats-row">
+        <div class="ai-stat">
+          <div class="ai-stat-val shimmer">47</div>
+          <div class="ai-stat-label">Queries Handled</div>
+        </div>
+        <div class="ai-stat">
+          <div class="ai-stat-val shimmer">42</div>
+          <div class="ai-stat-label">Reminders Sent</div>
+        </div>
+        <div class="ai-stat">
+          <div class="ai-stat-val">5</div>
+          <div class="ai-stat-label">Escalated</div>
+        </div>
+      </div>
+
+      <div class="ai-activity">
+        <div class="ai-activity-item">
+          <div class="ai-activity-dot" style="background: var(--green);"></div>
+          Booking confirmed &mdash; Thandiwe Nkosi, 09:00 Botox &amp; Fillers
+          <div class="ai-activity-time">09:42</div>
+        </div>
+        <div class="ai-activity-item">
+          <div class="ai-activity-dot" style="background: var(--gold);"></div>
+          FAQ answered &mdash; "What is the recovery time for SMILE Pro?" &rarr; sent info sheet
+          <div class="ai-activity-time">10:15</div>
+        </div>
+        <div class="ai-activity-item">
+          <div class="ai-activity-dot" style="background: var(--amber);"></div>
+          Appointment rescheduled &mdash; Marcus Steyn moved from 15:00 to 15:30
+          <div class="ai-activity-time">11:03</div>
+        </div>
+      </div>
+
+      <div class="reminder-row">
+        <div class="reminder-item">
+          <div class="reminder-icon sms">SMS</div>
+          <div class="reminder-text">
+            <span class="reminder-count">24</span>
+            <span class="reminder-label">SMS Sent</span>
+          </div>
+        </div>
+        <div class="reminder-item">
+          <div class="reminder-icon wa">WA</div>
+          <div class="reminder-text">
+            <span class="reminder-count">18</span>
+            <span class="reminder-label">WhatsApp</span>
+          </div>
+        </div>
+        <div class="reminder-item">
+          <div class="reminder-icon escalated">&#8593;</div>
+          <div class="reminder-text">
+            <span class="reminder-count">5</span>
+            <span class="reminder-label">Escalated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Charts -->
+    <div class="card charts-card">
+      <div class="charts-row">
+        <!-- Revenue by day bar chart -->
+        <div>
+          <div class="chart-section-title">Revenue by Day (This Week)</div>
+          <div class="bar-chart">
+            <div class="bar-col">
+              <div class="bar" style="height: 65%;">
+                <div class="bar-value">R54.6K</div>
+              </div>
+              <div class="bar-label">Mon</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height: 72%;">
+                <div class="bar-value">R61.2K</div>
+              </div>
+              <div class="bar-label">Tue</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height: 58%;">
+                <div class="bar-value">R48.8K</div>
+              </div>
+              <div class="bar-label">Wed</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height: 82%;">
+                <div class="bar-value">R68.4K</div>
+              </div>
+              <div class="bar-label">Thu</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height: 54%; background: linear-gradient(180deg, var(--gold), rgba(201,168,76,0.4));">
+                <div class="bar-value">R45.2K</div>
+              </div>
+              <div class="bar-label" style="color: var(--gold);">Fri</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient flow pie chart -->
+        <div>
+          <div class="chart-section-title">Patient Flow (This Month)</div>
+          <div class="pie-container">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <!-- Returning patients: 68% -->
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#C9A84C" stroke-width="20"
+                stroke-dasharray="213.6 314.16" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+              <!-- New patients: 32% -->
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#4ADE80" stroke-width="20"
+                stroke-dasharray="100.5 314.16" stroke-dashoffset="-213.6" transform="rotate(-90 60 60)"/>
+              <!-- Center circle for donut -->
+              <circle cx="60" cy="60" r="38" fill="#1A1A1A"/>
+              <text x="60" y="56" text-anchor="middle" fill="#C9A84C" font-family="SF Mono, Menlo, monospace" font-size="16" font-weight="700">612</text>
+              <text x="60" y="72" text-anchor="middle" fill="#8A8578" font-family="system-ui" font-size="9">total</text>
+            </svg>
+            <div class="pie-legend">
+              <div class="pie-legend-item">
+                <div class="pie-legend-dot" style="background: #C9A84C;"></div>
+                <span class="pie-legend-label">Returning</span>
+                <span class="pie-legend-val">68%</span>
+              </div>
+              <div class="pie-legend-item">
+                <div class="pie-legend-dot" style="background: #4ADE80;"></div>
+                <span class="pie-legend-label">New</span>
+                <span class="pie-legend-val">32%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── DATE SCRIPT ─── -->
+<script>
+  (function() {
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var d = new Date();
+    var formatted = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    var el = document.getElementById('currentDate');
+    if (el) el.textContent = formatted;
+  })();
+</script>
+
+</body>
+</html>

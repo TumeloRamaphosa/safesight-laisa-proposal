@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-05-19T14:00:00.000Z",
+  "mode": "simulated",
+  "instagram": {
+    "instagramFollowers": 3847,
+    "instagramProfileViews7d": 1240,
+    "instagramEngagement7d": 118,
+    "instagramRecentMedia": [
+      {
+        "id": "sim_001",
+        "caption": "The Art of Aging Gracefully — Behind the scenes at LAISA",
+        "media_type": "VIDEO",
+        "thumbnail_url": "",
+        "permalink": "https://instagram.com/p/sim_001",
+        "like_count": 142,
+        "comments_count": 18,
+        "timestamp": "2026-05-19T12:00:00.000Z"
+      },
+      {
+        "id": "sim_002",
+        "caption": "Skin Longevity: 3 non-negotiables every patient should know",
+        "media_type": "IMAGE",
+        "thumbnail_url": "",
+        "permalink": "https://instagram.com/p/sim_002",
+        "like_count": 89,
+        "comments_count": 7,
+        "timestamp": "2026-05-18T12:00:00.000Z"
+      },
+      {
+        "id": "sim_003",
+        "caption": "Dr. Laisa on the science of collagen remodelling",
+        "media_type": "REEL",
+        "thumbnail_url": "",
+        "permalink": "https://instagram.com/p/sim_003",
+        "like_count": 210,
+        "comments_count": 31,
+        "timestamp": "2026-05-17T12:00:00.000Z"
+      }
+    ]
+  },
+  "googleAnalytics": {
+    "gaSessions7d": 412,
+    "gaPageViews7d": 1380,
+    "gaTopPages": [
+      { "path": "/", "views": 342 },
+      { "path": "/services/facial-rejuvenation", "views": 128 },
+      { "path": "/book-consultation", "views": 97 },
+      { "path": "/about-dr-laisa", "views": 84 },
+      { "path": "/pricing", "views": 61 }
+    ]
+  },
+  "whatsapp": {
+    "waMessages24h": 12,
+    "waConversations24h": 4
+  }
+}

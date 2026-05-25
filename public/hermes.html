@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hermes — LAISA Agent Orchestrator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #FAF8F5; --surface: #FFFFFF; --card: #FFFFFF;
+    --gold: #D4AF37; --gold-dim: #AA8B2C;
+    --rose: #E91E63; --rose-dim: #C2185B; --pink-soft: #FCE4EC;
+    --light: #2D2D2D; --muted: #8E8585;
+    --green: #4CAF50; --red: #F44336;
+    --border: rgba(233,30,99,0.15); --shadow: rgba(0,0,0,0.06);
+    --font-heading: 'Playfair Display', serif;
+    --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+  }
+  body { background: var(--cream); color: var(--light); font-family: var(--font-sans); min-height: 100vh; line-height: 1.5; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+  .logo { font-family: var(--font-heading); font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .logo span { color: var(--light); font-weight: 300; font-style: italic; }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+  .nav-link:hover, .nav-link.active { color: var(--gold); }
+
+  .main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+  .hero { display: flex; align-items: center; gap: 32px; margin-bottom: 40px; padding: 32px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 8px 32px var(--shadow); }
+  .hero-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-dim)); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; }
+  .hero-info h1 { font-family: var(--font-heading); font-size: 28px; color: var(--pink-text); margin-bottom: 8px; }
+  .hero-info p { font-size: 14px; color: var(--muted); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .panel { background: var(--card); border-radius: 12px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 20px var(--shadow); }
+  .panel-title { font-family: var(--font-heading); font-size: 18px; color: var(--pink-text); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .panel-title span { font-size: 11px; color: var(--muted); font-family: var(--font-mono); text-transform: uppercase; }
+
+  .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .agent-box { padding: 14px; background: var(--cream); border-radius: 10px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
+  .agent-box:hover { border-color: var(--rose); background: var(--pink-soft); }
+  .agent-box h4 { font-size: 14px; color: var(--light); margin-bottom: 4px; }
+  .agent-box p { font-size: 11px; color: var(--muted); }
+  .agent-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .agent-status.active { background: var(--green); }
+  .agent-status.idle { background: var(--gold); }
+
+  .mission-log { font-family: var(--font-mono); font-size: 12px; height: 300px; overflow-y: auto; }
+  .log-item { padding: 10px; border-left: 3px solid var(--gold); margin-bottom: 8px; background: var(--cream); border-radius: 0 8px 8px 0; }
+  .log-time { color: var(--rose); font-weight: 700; margin-bottom: 2px; }
+
+  .command-area { display: flex; gap: 10px; margin-top: 16px; }
+  .command-input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--cream); color: var(--light); font-family: var(--font-mono); font-size: 13px; }
+  .command-input:focus { outline: none; border-color: var(--rose); }
+  .command-btn { padding: 12px 24px; border-radius: 8px; border: none; background: var(--rose); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
+  .command-btn:hover { background: var(--rose-dim); }
+
+  @media (max-width: 1024px) {
+    .grid { grid-template-columns: 1fr; }
+    .hero { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">LAISA <span>Agent OS</span></div>
+  <div class="nav-links">
+    <a href="laisa-agent-os.html" class="nav-link">Elegance Hub</a>
+    <a href="laisa-crm.html" class="nav-link">Aesthetic CRM</a>
+    <a href="charlie.html" class="nav-link">Charlie</a>
+    <a href="hermes.html" class="nav-link active">Hermes</a>
+    <a href="social-sdk.html" class="nav-link">Social SDK</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-avatar">🎯</div>
+    <div class="hero-info">
+      <h1>Hermes — Mission Control</h1>
+      <p>Orchestrates all LAISA agents. Dispatches tasks, monitors health, routes intelligence between DenchClaw, CashClaw, Naledi, Charlie, Robusca, and General. Real-time coordination for the aesthetic clinic.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- AGENT STATUS -->
+    <div class="panel">
+      <div class="panel-title">Agent Fleet <span>7 Active</span></div>
+      <div class="agent-grid" id="agentGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- MISSION LOG -->
+    <div class="panel">
+      <div class="panel-title">Mission Log <span>Live Stream</span></div>
+      <div class="mission-log" id="missionLog">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- COMMAND CENTER -->
+    <div class="panel">
+      <div class="panel-title">Command Center <span>Dispatch</span></div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">Send direct commands to any agent or broadcast to the fleet.</p>
+      <div class="command-area">
+        <input type="text" class="command-input" id="commandInput" placeholder="e.g. @naledi generate IG post about chemical peels">
+        <button class="command-btn" onclick="sendCommand()">Dispatch</button>
+      </div>
+      <div style="margin-top: 20px;">
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Quick Commands:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <button class="command-btn" style="padding: 8px 14px; font-size: 12px;" onclick="quickCmd('@denchclaw check bookings today')">Check Bookings</button>
+          <button class="command-btn" style="padding: 8px 14px; font-size: 12px;" onclick="quickCmd('@cashclaw generate invoice L. Mokoena R24,500')">Generate Invoice</button>
+          <button class="command-btn" style="padding: 8px 14px; font-size: 12px;" onclick="quickCmd('@naledi post skincare tips to IG')">IG Post</button>
+          <button class="command-btn" style="padding: 8px 14px; font-size: 12px;" onclick="quickCmd('@charlie call C. Botha for follow-up')">Voice Call</button>
+          <button class="command-btn" style="padding: 8px 14px; font-size: 12px;" onclick="quickCmd('@kiloclaw deploy latest to Fly.io')">Deploy Fly</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const agents = [
+  { id: 'denchclaw', name: 'DenchClaw', role: 'Patient Support', status: 'active', task: 'WhatsApp monitoring', icon: '💬' },
+  { id: 'cashclaw', name: 'CashClaw', role: 'Revenue & Billing', status: 'active', task: 'Invoice generation', icon: '💰' },
+  { id: 'naledi', name: 'Naledi', role: 'Content Engine', status: 'active', task: 'IG content pipeline', icon: '✨' },
+  { id: 'charlie', name: 'Charlie', role: 'Voice Agent', status: 'idle', task: 'Standby', icon: '🎙️' },
+  { id: 'robusca', name: 'Robusca', role: 'Clinic Coordinator', status: 'active', task: 'Schedule sync', icon: '📅' },
+  { id: 'general', name: 'General', role: 'Orchestrator', status: 'active', task: 'Mission dispatch', icon: '🎯' },
+  { id: 'kiloclaw', name: 'KiloClaw', role: 'Execution Engineer', status: 'active', task: 'OpenClaw runtime / Fly.io', icon: '⚡' }
+];
+
+const logs = [
+  { time: '16:42:18', msg: 'General: Dispatched @naledi → Instagram content generation (chemical peel campaign)' },
+  { time: '16:41:05', msg: 'DenchClaw: WhatsApp inquiry from S. Khumalo — booking consultation for Jun 15' },
+  { time: '16:39:42', msg: 'CashClaw: Generated invoice #LA-8891 for L. Mokoena (R24,500) — Sage sync pending' },
+  { time: '16:38:10', msg: 'Robusca: Daily schedule synced — 4 appointments, 2 follow-ups, 1 VIP' },
+  { time: '16:35:55', msg: 'Naledi: Published "3 Tips for Post-Op Care" to Instagram — 142 likes in 12min' },
+  { time: '16:33:22', msg: 'Charlie: Completed follow-up call with C. Botha — Elite membership renewal confirmed' },
+  { time: '16:30:00', msg: 'General: Fleet health check — all agents operational, 99.98% uptime' }
+];
+
+function renderAgents() {
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = agents.map(a => `
+    <div class="agent-box" onclick="selectAgent('${a.id}')">
+      <h4>${a.icon} ${a.name}</h4>
+      <p><span class="agent-status ${a.status}"></span>${a.task}</p>
+    </div>
+  `).join('');
+}
+
+function renderLogs() {
+  const log = document.getElementById('missionLog');
+  log.innerHTML = logs.map(l => `
+    <div class="log-item">
+      <div class="log-time">${l.time}</div>
+      <div>${l.msg}</div>
+    </div>
+  `).join('');
+}
+
+function sendCommand() {
+  const input = document.getElementById('commandInput');
+  const cmd = input.value.trim();
+  if (!cmd) return;
+  logs.unshift({ time: new Date().toLocaleTimeString(), msg: `You: ${cmd}` });
+  logs.unshift({ time: new Date().toLocaleTimeString(), msg: `General: Acknowledged. Routing to target agent...` });
+  renderLogs();
+  input.value = '';
+}
+
+function quickCmd(cmd) {
+  document.getElementById('commandInput').value = cmd;
+  sendCommand();
+}
+
+function selectAgent(id) {
+  const a = agents.find(x => x.id === id);
+  document.getElementById('commandInput').value = `@${a.id} `;
+  document.getElementById('commandInput').focus();
+}
+
+renderAgents();
+renderLogs();
+</script>
+
+</body>
+</html>
