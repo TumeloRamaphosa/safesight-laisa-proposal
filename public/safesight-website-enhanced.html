@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeSight Aesthetic Clinic | Vision &amp; Beauty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8D5A3;
+  --obsidian: #0A0A0A;
+  --obsidian-light: #141414;
+  --cream: #F5F0E8;
+  --cream-muted: #B8B0A0;
+  --rose: #E91E63;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Cormorant Garamond', serif;
+  background: var(--obsidian);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--obsidian); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* Navigation */
+nav {
+  position: fixed; top: 0; left: 0; width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 3rem; z-index: 1000;
+  transition: all 0.4s ease;
+}
+nav.scrolled {
+  background: rgba(10,10,10,0.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 4px; }
+.logo span { color: var(--cream); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--cream-muted);
+  text-decoration: none; transition: color 0.3s ease; position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+  background: var(--gold); transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 2px;
+  color: var(--obsidian); background: var(--gold); padding: 0.6rem 1.6rem;
+  border: none; cursor: pointer; text-decoration: none; transition: all 0.3s ease;
+}
+.nav-cta:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.3); }
+
+/* Hero */
+.hero {
+  height: 100vh; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(233,30,99,0.05) 0%, transparent 50%),
+              var(--obsidian);
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(201,168,76,0.03) 1px, transparent 1px),
+                    radial-gradient(circle at 80% 20%, rgba(30,90,168,0.03) 1px, transparent 1px);
+  background-size: 60px 60px, 40px 40px;
+}
+.hero-content {
+  position: relative; z-index: 2; text-align: center;
+  max-width: 800px; padding: 0 2rem;
+}
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 4px; color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem, 7vw, 6rem);
+  line-height: 0.95; letter-spacing: 3px; margin-bottom: 1.5rem;
+}
+.hero-title .gold { color: var(--gold); }
+.hero-subtitle {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 300; font-style: italic; color: var(--cream-muted);
+  margin-bottom: 3rem; line-height: 1.7;
+}
+.hero-actions { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px;
+  color: var(--obsidian); background: var(--gold); padding: 1rem 2.5rem;
+  border: none; text-decoration: none; transition: all 0.4s ease; display: inline-block;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-3px); box-shadow: 0 15px 40px rgba(201,168,76,0.4); }
+.btn-outline {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px;
+  color: var(--gold); background: transparent; padding: 1rem 2.5rem;
+  border: 1px solid var(--gold); text-decoration: none; transition: all 0.4s ease; display: inline-block;
+}
+.btn-outline:hover { background: var(--gold); color: var(--obsidian); }
+
+/* Sections */
+.section { padding: 6rem 2rem; }
+.section-header { text-align: center; margin-bottom: 3.5rem; }
+.section-eyebrow {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 4px; color: var(--gold); margin-bottom: 0.8rem; display: block;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 2px; line-height: 1; margin-bottom: 1rem;
+}
+.section-subtitle {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  font-weight: 300; color: var(--cream-muted); max-width: 600px; margin: 0 auto; line-height: 1.6;
+}
+
+/* Services */
+.services-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem; max-width: 1200px; margin: 0 auto;
+}
+.service-card {
+  background: var(--obsidian-light); border: 1px solid rgba(201,168,76,0.1);
+  padding: 2.5rem; text-align: center; transition: all 0.4s ease; position: relative; overflow: hidden;
+}
+.service-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0); transition: transform 0.5s ease;
+}
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover {
+  border-color: rgba(201,168,76,0.3); transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.service-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem; font-size: 1.5rem;
+}
+.service-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+  letter-spacing: 2px; color: var(--gold); margin-bottom: 0.8rem;
+}
+.service-desc {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+  color: var(--cream-muted); line-height: 1.6;
+}
+
+/* Doctors */
+.doctors-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2.5rem; max-width: 1200px; margin: 0 auto;
+}
+.doctor-card {
+  background: var(--obsidian-light); border: 1px solid rgba(201,168,76,0.1);
+  overflow: hidden; transition: all 0.4s ease;
+}
+.doctor-card:hover {
+  border-color: rgba(201,168,76,0.3); transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.doctor-photo {
+  width: 100%; height: 280px; background-size: cover; background-position: center;
+  position: relative;
+}
+.doctor-photo::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(to top, var(--obsidian-light), transparent);
+}
+.doctor-info { padding: 1.5rem; }
+.doctor-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+  letter-spacing: 2px; color: var(--gold); margin-bottom: 0.3rem;
+}
+.doctor-title {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--cream-muted); margin-bottom: 0.8rem;
+}
+.doctor-bio {
+  font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+  color: var(--cream-muted); line-height: 1.6;
+}
+
+/* Why Choose Us */
+.why-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem; max-width: 1200px; margin: 0 auto;
+}
+.why-card {
+  display: flex; align-items: flex-start; gap: 1.2rem;
+  padding: 1.5rem; background: var(--obsidian-light);
+  border: 1px solid rgba(201,168,76,0.08);
+}
+.why-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.why-text h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+  letter-spacing: 2px; color: var(--gold); margin-bottom: 0.4rem;
+}
+.why-text p {
+  font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+  color: var(--cream-muted); line-height: 1.5;
+}
+
+/* Reviews */
+.reviews-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem; max-width: 1200px; margin: 0 auto;
+}
+.review-card {
+  background: var(--obsidian-light); border: 1px solid rgba(201,168,76,0.1);
+  padding: 2rem; position: relative;
+}
+.review-stars { color: var(--gold); font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 1rem; }
+.review-text {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.05rem;
+  color: var(--cream); line-height: 1.7; font-style: italic; margin-bottom: 1.5rem;
+}
+.review-author {
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.review-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--rose));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; color: var(--obsidian);
+}
+.review-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold); }
+.review-procedure {
+  font-family: 'Space Mono', monospace; font-size: 0.55rem;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--cream-muted);
+}
+
+/* Location */
+.location-section { padding: 0; }
+.location-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 500px;
+}
+.location-map {
+  background: var(--obsidian-light); display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.location-map iframe {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+}
+.location-info {
+  padding: 4rem; display: flex; flex-direction: column; justify-content: center;
+  background: linear-gradient(135deg, var(--obsidian-light) 0%, var(--obsidian) 100%);
+}
+.location-detail {
+  display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;
+}
+.location-detail-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+}
+.location-detail h4 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem;
+  letter-spacing: 2px; color: var(--gold); margin-bottom: 0.3rem;
+}
+.location-detail p {
+  font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+  color: var(--cream-muted); line-height: 1.5;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 6rem 2rem; text-align: center;
+  background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%), var(--obsidian);
+}
+.cta-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 3px; margin-bottom: 1rem;
+}
+.cta-subtitle {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  color: var(--cream-muted); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.6;
+}
+
+/* Footer */
+.footer {
+  background: #050505; border-top: 1px solid rgba(201,168,76,0.15);
+  padding: 3rem 2rem 2rem; text-align: center;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+  color: var(--gold); letter-spacing: 4px; margin-bottom: 0.5rem;
+}
+.footer-logo span { color: var(--cream); }
+.footer-tagline {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+  color: var(--cream-muted); font-style: italic; margin-bottom: 2rem;
+}
+.footer-links {
+  display: flex; justify-content: center; gap: 2rem;
+  margin-bottom: 2rem; flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--cream-muted); text-decoration: none; transition: color 0.3s ease;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy {
+  font-family: 'Space Mono', monospace; font-size: 0.55rem;
+  color: rgba(255,255,255,0.2); letter-spacing: 1px;
+}
+.footer-powered {
+  margin-top: 1rem; font-family: 'Space Mono', monospace; font-size: 0.55rem;
+  color: rgba(201,168,76,0.5); letter-spacing: 2px; text-transform: uppercase;
+}
+
+/* WhatsApp Float */
+.whatsapp-float {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+}
+.whatsapp-btn {
+  width: 56px; height: 56px; border-radius: 50%; background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  transition: transform 0.3s ease; cursor: pointer; text-decoration: none;
+}
+.whatsapp-btn:hover { transform: scale(1.08); }
+.whatsapp-btn svg { width: 28px; height: 28px; fill: white; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .location-grid { grid-template-columns: 1fr; }
+  .location-info { padding: 2rem; }
+  .section { padding: 4rem 1.5rem; }
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.8s ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="logo">SAFE<span>SIGHT</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#doctors">Doctors</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book Now</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Johannesburg's Premier Multidisciplinary Clinic</div>
+    <h1 class="hero-title">
+      VISION <span class="gold">&amp;</span><br>
+      <span class="gold">AESTHETICS</span>
+    </h1>
+    <p class="hero-subtitle">
+      Where surgical precision meets aesthetic artistry. From LASIK to Botox,
+      trust South Africa's leading specialists with your sight and your confidence.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Book Consultation</a>
+      <a href="#services" class="btn-outline">Explore Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section class="section" id="services">
+  <div class="section-header">
+    <span class="section-eyebrow">Comprehensive Care</span>
+    <h2 class="section-title">OUR <span style="color:var(--gold)">SERVICES</span></h2>
+    <p class="section-subtitle">Expert eye surgery and aesthetic treatments delivered with precision and care.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card fade-up delay-1">
+      <div class="service-icon">👁️</div>
+      <h3 class="service-title">LASIK VISION</h3>
+      <p class="service-desc">Wavefront-guided laser vision correction. Reduce or eliminate your dependence on glasses and contact lenses.</p>
+    </div>
+    <div class="service-card fade-up delay-2">
+      <div class="service-icon">🔬</div>
+      <h3 class="service-title">CATARACT SURGERY</h3>
+      <p class="service-desc">Advanced phacoemulsification with premium intraocular lens implantation. Restore crystal-clear vision.</p>
+    </div>
+    <div class="service-card fade-up delay-3">
+      <div class="service-icon">💉</div>
+      <h3 class="service-title">AESTHETICS</h3>
+      <p class="service-desc">Botox, dermal fillers, chemical peels, and body contouring. Enhance your natural beauty with expert care.</p>
+    </div>
+    <div class="service-card fade-up delay-4">
+      <div class="service-icon">📋</div>
+      <h3 class="service-title">CONSULTATIONS</h3>
+      <p class="service-desc">Comprehensive eye exams and aesthetic assessments. Personalized treatment plans tailored to your needs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Doctors -->
+<section class="section" id="doctors" style="background: linear-gradient(to bottom, var(--obsidian), var(--obsidian-light));">
+  <div class="section-header">
+    <span class="section-eyebrow">Expert Practitioners</span>
+    <h2 class="section-title">MEET THE <span style="color:var(--gold)">TEAM</span></h2>
+    <p class="section-subtitle">Board-certified specialists with decades of combined experience in ophthalmology and aesthetic medicine.</p>
+  </div>
+  <div class="doctors-grid">
+    <div class="doctor-card fade-up delay-1">
+      <div class="doctor-photo" style="background-image: url('https://safesight.co.za/wp-content/uploads/2016/09/Dr-Maleka.jpg');"></div>
+      <div class="doctor-info">
+        <h3 class="doctor-name">DR. TEBOGO MALEKA</h3>
+        <p class="doctor-title">Specialist Ophthalmologist</p>
+        <p class="doctor-bio">Expert in tailored laser vision correction, keratoconus care, and cataract operations. Committed to restoring clarity and improving quality of life through precision surgery.</p>
+      </div>
+    </div>
+    <div class="doctor-card fade-up delay-2">
+      <div class="doctor-photo" style="background-image: url('https://safesight.co.za/wp-content/uploads/2023/11/5P0A1438-scaled.jpg');"></div>
+      <div class="doctor-info">
+        <h3 class="doctor-name">DR. THABISO MOFOKENG</h3>
+        <p class="doctor-title">General Ophthalmologist</p>
+        <p class="doctor-bio">Specializing in keratoconus, glaucoma, and refractive laser vision correction. A dedicated clinician focused on comprehensive eye health and patient education.</p>
+      </div>
+    </div>
+    <div class="doctor-card fade-up delay-3">
+      <div class="doctor-photo" style="background-image: url('https://safesight.co.za/wp-content/uploads/2025/08/WhatsApp-Image-2025-08-12-at-13.35.03.jpeg');"></div>
+      <div class="doctor-info">
+        <h3 class="doctor-name">DR. THEMBANI MENTOR</h3>
+        <p class="doctor-title">Aesthetic Physician</p>
+        <p class="doctor-bio">Leading aesthetic medicine, wellbeing, and age-management solutions. Crafting personalized treatment plans that enhance natural beauty and promote holistic wellness.</p>
+      </div>
+    </div>
+    <div class="doctor-card fade-up delay-4">
+      <div class="doctor-photo" style="background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; align-items: center; justify-content: center;">
+        <span style="font-size: 3rem;">👤</span>
+      </div>
+      <div class="doctor-info">
+        <h3 class="doctor-name">DR. [YOUR NAME]</h3>
+        <p class="doctor-title">Specialist [Your Field]</p>
+        <p class="doctor-bio">Join our team of exceptional practitioners. Contact us to learn about career opportunities at SafeSight Aesthetic Clinic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="section" id="why">
+  <div class="section-header">
+    <span class="section-eyebrow">The SafeSight Difference</span>
+    <h2 class="section-title">WHY CHOOSE <span style="color:var(--gold)">US</span></h2>
+    <p class="section-subtitle">Technology, experience, and patient-centered care that sets us apart.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card fade-up delay-1">
+      <div class="why-icon">🔬</div>
+      <div class="why-text">
+        <h3>Cutting-Edge Technology</h3>
+        <p>Alcon LenSx femtosecond laser, Zeiss Cirrus HD-OCT, and AMO VISX S4 IR excimer laser for precision outcomes.</p>
+      </div>
+    </div>
+    <div class="why-card fade-up delay-2">
+      <div class="why-icon">🏆</div>
+      <div class="why-text">
+        <h3>Proven Experience</h3>
+        <p>15,000+ procedures performed with a 98.7% success rate. Over 20 years of clinical excellence in Johannesburg.</p>
+      </div>
+    </div>
+    <div class="why-card fade-up delay-3">
+      <div class="why-icon">❤️</div>
+      <div class="why-text">
+        <h3>Patient-Centered Care</h3>
+        <p>From your first consultation to post-operative follow-up, we guide you with clarity, compassion, and clinical excellence.</p>
+      </div>
+    </div>
+    <div class="why-card fade-up delay-4">
+      <div class="why-icon">🔒</div>
+      <div class="why-text">
+        <h3>POPIA Compliant</h3>
+        <p>Full compliance with South Africa's Protection of Personal Information Act. Your data is encrypted and protected.</p>
+      </div>
+    </div>
+    <div class="why-card fade-up delay-1">
+      <div class="why-icon">📱</div>
+      <div class="why-text">
+        <h3>Digital Convenience</h3>
+        <p>Book online, receive WhatsApp reminders, and access telemedicine consultations from anywhere.</p>
+      </div>
+    </div>
+    <div class="why-card fade-up delay-2">
+      <div class="why-icon">🌙</div>
+      <div class="why-text">
+        <h3>After-Hours Support</h3>
+        <p>24/7 AI-powered patient concierge for emergency queries and appointment management.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section class="section" id="reviews" style="background: linear-gradient(to bottom, var(--obsidian-light), var(--obsidian));">
+  <div class="section-header">
+    <span class="section-eyebrow">Patient Stories</span>
+    <h2 class="section-title">WHAT THEY <span style="color:var(--gold)">SAY</span></h2>
+    <p class="section-subtitle">Real experiences from real patients who trusted us with their vision and confidence.</p>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card fade-up delay-1">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"I was terrified of cataract surgery, but Dr. Maleka explained everything so clearly. The next morning, I could see the birds on the tree outside my window for the first time in years."</p>
+      <div class="review-author">
+        <div class="review-avatar">NT</div>
+        <div>
+          <div class="review-name">Nthabiseng Tau</div>
+          <div class="review-procedure">Cataract Surgery</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card fade-up delay-2">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"After wearing glasses since I was eight, I finally got LASIK at SafeSight. The whole process took less than twenty minutes and now I have 20/20 vision. The team was phenomenal."</p>
+      <div class="review-author">
+        <div class="review-avatar">JV</div>
+        <div>
+          <div class="review-name">Johan van der Merwe</div>
+          <div class="review-procedure">LASIK Surgery</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card fade-up delay-3">
+      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="review-text">"Dr. Mentor crafted the perfect treatment plan for my aesthetic goals. Natural-looking results that boosted my confidence. The whole experience felt luxurious and personalized."</p>
+      <div class="review-author">
+        <div class="review-avatar">LD</div>
+        <div>
+          <div class="review-name">Lerato Dlamini</div>
+          <div class="review-procedure">Aesthetic Treatments</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Location -->
+<section class="section location-section" id="contact">
+  <div class="section-header">
+    <span class="section-eyebrow">Visit Us</span>
+    <h2 class="section-title">LOCATION <span style="color:var(--gold)">&amp;</span> CONTACT</h2>
+    <p class="section-subtitle">Find us in the heart of Sandton, Johannesburg.</p>
+  </div>
+  <div class="location-grid">
+    <div class="location-map">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3582.733465532647!2d28.0484!3d-26.1084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e957336b6c4d5c1%3A0x2c2c2c2c2c2c2c2c!2sSandton%2C%20Johannesburg!5e0!3m2!1sen!2sza!4v1699999999999!5m2!1sen!2sza"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+    <div class="location-info">
+      <div class="location-detail">
+        <div class="location-detail-icon">📍</div>
+        <div>
+          <h4>Address</h4>
+          <p>SafeSight Aesthetic Clinic<br>Sandton City, Johannesburg<br>Gauteng, South Africa</p>
+        </div>
+      </div>
+      <div class="location-detail">
+        <div class="location-detail-icon">📞</div>
+        <div>
+          <h4>Phone</h4>
+          <p>011 000 0000<br>Mon – Fri: 8:00 – 17:00<br>Sat: 9:00 – 13:00</p>
+        </div>
+      </div>
+      <div class="location-detail">
+        <div class="location-detail-icon">✉️</div>
+        <div>
+          <h4>Email</h4>
+          <p>info@safesight.co.za<br>appointments@safesight.co.za</p>
+        </div>
+      </div>
+      <div class="location-detail">
+        <div class="location-detail-icon">💬</div>
+        <div>
+          <h4>WhatsApp</h4>
+          <p>+27 11 000 0000<br>24/7 AI-powered responses</p>
+        </div>
+      </div>
+      <div style="margin-top: 2rem;">
+        <a href="https://wa.me/27110000000" class="btn-primary" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">YOUR VISION <span style="color:var(--gold)">DESERVES</span><br>THE BEST</h2>
+  <p class="cta-subtitle">Don't wait to see the world clearly or feel your most confident. Book your consultation today.</p>
+  <div class="hero-actions" style="justify-content: center;">
+    <a href="https://wa.me/27110000000" class="btn-primary" target="_blank" rel="noopener">Book via WhatsApp</a>
+    <a href="tel:+27110000000" class="btn-outline">Call 011 000 0000</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">SAFE<span>SIGHT</span></div>
+  <p class="footer-tagline">Precision Vision. Compassionate Care. Timeless Beauty.</p>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#doctors">Doctors</a>
+    <a href="#why">Why Us</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#contact">Contact</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <div class="footer-copy">
+    &copy; 2026 SafeSight Aesthetic Clinic. All rights reserved. |
+    <a href="#" style="color: inherit; text-decoration: underline;">Privacy Policy</a> |
+    <a href="#" style="color: inherit; text-decoration: underline;">POPIA Compliance</a>
+  </div>
+  <div class="footer-powered">Powered by StudEx Group</div>
+</footer>
+
+<!-- WhatsApp Float -->
+<div class="whatsapp-float">
+  <a href="https://wa.me/27110000000" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.546 4.094 1.504 5.824L.053 23.632l5.965-1.565A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.82c-1.94 0-3.792-.518-5.397-1.477l-.387-.23-3.478.913.928-3.395-.253-.402A9.794 9.794 0 012.18 12c0-5.422 4.398-9.82 9.82-9.82 5.422 0 9.82 4.398 9.82 9.82 0 5.422-4.398 9.82-9.82 9.82z"/></svg>
+  </a>
+</div>
+
+<script>
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+</script>
+
+</body>
+</html>
